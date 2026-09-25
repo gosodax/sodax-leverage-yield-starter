@@ -5,13 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  DEFAULT_SOURCE_CHAIN,
-  DEFAULT_VAULT_NAME,
-  isSourceChain,
-  NATIVE_GAS_RESERVE,
-  type SourceChainKey,
-} from '@/config/workshop';
+import { DEFAULT_SOURCE_CHAIN, isSourceChain, NATIVE_GAS_RESERVE, type SourceChainKey } from '@/config/workshop';
 import { chainName } from '@/lib/chains';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/format';
 import { useEvmWallet } from '@/wallet';
@@ -30,9 +24,14 @@ import { VaultApr } from './VaultApr';
 import { VaultPicker } from './VaultPicker';
 
 /** Deposit card plus the user's position for the selected vault and source chain. */
-export function DepositForm() {
+export function DepositForm({
+  vaultName,
+  onVaultChange,
+}: {
+  vaultName: string;
+  onVaultChange: (name: string) => void;
+}) {
   const vaults = useVaults();
-  const [vaultName, setVaultName] = useState(DEFAULT_VAULT_NAME);
   const vault = useVault(vaultName) ?? vaults[0];
 
   // Source chain: the user's pick, else the wallet's current chain if allowed, else the default.
@@ -87,7 +86,7 @@ export function DepositForm() {
               <span className="font-medium">Vault</span>
               <VaultApr vault={vault.vault} className="font-semibold text-primary" />
             </div>
-            <VaultPicker vaults={vaults} value={vault.name} onChange={setVaultName} />
+            <VaultPicker vaults={vaults} value={vault.name} onChange={onVaultChange} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
