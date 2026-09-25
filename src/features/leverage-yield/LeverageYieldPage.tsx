@@ -5,8 +5,8 @@ import { DepositForm } from './components/DepositForm';
 export function LeverageYieldPage() {
   return (
     <div className="flex flex-col gap-8">
-      <NextPrompt next={2} />
-      <div className="mx-auto w-full max-w-xl">
+      <NextPrompt next={3} />
+      <div className="mx-auto w-full max-w-5xl">
         <DepositForm />
       </div>
     </div>
