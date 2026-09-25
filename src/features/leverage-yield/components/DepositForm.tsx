@@ -20,6 +20,8 @@ import { useTokenBalance } from '../hooks/useTokenBalance';
 import { useTokenChoice } from '../hooks/useTokenChoice';
 import { useVault, useVaults } from '../hooks/useVaults';
 import { ChainSelect } from './ChainSelect';
+import { DepositDialog, type DepositReview } from './DepositDialog';
+import { PositionCard } from './PositionCard';
 import { QuoteDetails } from './QuoteDetails';
 import { QuoteError } from './QuoteError';
 import { RiskNotice } from './RiskNotice';
@@ -27,6 +29,7 @@ import { TokenSelect } from './TokenSelect';
 import { VaultApr } from './VaultApr';
 import { VaultPicker } from './VaultPicker';
 
+/** Deposit card plus the user's position for the selected vault and source chain. */
 export function DepositForm() {
   const vaults = useVaults();
   const [vaultName, setVaultName] = useState(DEFAULT_VAULT_NAME);
@@ -43,7 +46,9 @@ export function DepositForm() {
   const inputAmount = token ? parseTokenAmount(amountText, token.decimals) : undefined;
   const { balance, isLoading: balanceLoading } = useTokenBalance(chainKey, token, wallet.address);
 
-  const quote = useDepositQuote({ vault, srcChainKey: chainKey, token, inputAmount });
+  // Inputs the user is reviewing. While the dialog is open it quotes them itself, so the form stops quoting.
+  const [review, setReview] = useState<DepositReview | null>(null);
+  const quote = useDepositQuote({ vault, srcChainKey: chainKey, token, inputAmount: review ? undefined : inputAmount });
 
   const action = (() => {
     if (!wallet.isConnected) return { label: 'Connect wallet', onClick: wallet.connect };
@@ -60,101 +65,116 @@ export function DepositForm() {
     )
       return { label: `Leave some ${token.symbol} for gas`, disabled: true };
     if (quote.isLoading) return { label: 'Getting quote…', disabled: true };
-    if (quote.error || quote.minAmountOut === undefined) return { label: 'No quote', disabled: true };
-    // Milestone 2 turns this into the review + execute flow.
-    return { label: 'Review deposit', disabled: true, hint: 'Deposit execution is Milestone 2.' };
+    if (!vault || !token || quote.error || quote.amountOut === undefined || quote.minAmountOut === undefined) {
+      return { label: 'No quote', disabled: true };
+    }
+    const reviewed = { vault, token, chainKey, inputAmount };
+    return { label: 'Review deposit', onClick: () => setReview(reviewed) };
   })();
 
   if (!vault || !token) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Deposit</CardTitle>
-        <CardDescription>Choose a vault and pay with a token from the network you already use.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="font-medium">Vault</span>
-            <VaultApr vault={vault.vault} className="font-semibold text-primary" />
-          </div>
-          <VaultPicker vaults={vaults} value={vault.name} onChange={setVaultName} />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+      <Card>
+        <CardHeader>
+          <CardTitle>Deposit</CardTitle>
+          <CardDescription>Choose a vault and pay with a token from the network you already use.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">From network</span>
-            <ChainSelect value={chainKey} onChange={setPickedChain} />
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium">Vault</span>
+              <VaultApr vault={vault.vault} className="font-semibold text-primary" />
+            </div>
+            <VaultPicker vaults={vaults} value={vault.name} onChange={setVaultName} />
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">Pay with</span>
-            <TokenSelect tokens={tokens} value={token.address} onChange={pickToken} />
-          </div>
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between text-sm">
-            <label htmlFor="deposit-amount" className="font-medium">
-              Amount
-            </label>
-            {wallet.isConnected && (
-              <span className="text-muted-foreground">
-                Balance:{' '}
-                {balanceLoading ? (
-                  <Skeleton className="inline-block h-3 w-12 align-middle" />
-                ) : (
-                  `${formatTokenAmount(balance, token.decimals)} ${token.symbol}`
-                )}
-              </span>
-            )}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium">From network</span>
+              <ChainSelect value={chainKey} onChange={setPickedChain} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium">Pay with</span>
+              <TokenSelect tokens={tokens} value={token.address} onChange={pickToken} />
+            </div>
           </div>
-          <div className="relative">
-            <Input
-              id="deposit-amount"
-              inputMode="decimal"
-              placeholder="0.00"
-              value={amountText}
-              onChange={event => setAmountText(event.target.value)}
-              className="h-14 pr-20 text-xl"
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between text-sm">
+              <label htmlFor="deposit-amount" className="font-medium">
+                Amount
+              </label>
+              {wallet.isConnected && (
+                <span className="text-muted-foreground">
+                  Balance:{' '}
+                  {balanceLoading ? (
+                    <Skeleton className="inline-block h-3 w-12 align-middle" />
+                  ) : (
+                    `${formatTokenAmount(balance, token.decimals)} ${token.symbol}`
+                  )}
+                </span>
+              )}
+            </div>
+            <div className="relative">
+              <Input
+                id="deposit-amount"
+                inputMode="decimal"
+                placeholder="0.00"
+                value={amountText}
+                onChange={event => setAmountText(event.target.value)}
+                className="h-14 pr-20 text-xl"
+              />
+              {/* No Max for the native token: the user needs some of it for gas. */}
+              {balance !== undefined && balance > 0n && !isNativeToken(chainKey, token) && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => setAmountText(formatUnits(balance, token.decimals))}
+                >
+                  Max
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {inputAmount && quote.error ? (
+            <QuoteError message={quote.error} onRetry={quote.refetch} />
+          ) : inputAmount && quote.isLoading ? (
+            <Skeleton className="h-32 w-full" />
+          ) : inputAmount && quote.amountOut !== undefined && quote.minAmountOut !== undefined ? (
+            <QuoteDetails
+              vault={vault}
+              token={token}
+              inputAmount={inputAmount}
+              shares={quote.amountOut}
+              minShares={quote.minAmountOut}
             />
-            {/* No Max for the native token: the user needs some of it for gas. */}
-            {balance !== undefined && balance > 0n && !isNativeToken(chainKey, token) && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="absolute right-2 top-1/2 -translate-y-1/2"
-                onClick={() => setAmountText(formatUnits(balance, token.decimals))}
-              >
-                Max
-              </Button>
-            )}
+          ) : null}
+
+          <RiskNotice />
+
+          <div className="flex flex-col gap-2">
+            <Button size="lg" disabled={action.disabled} onClick={action.onClick}>
+              {action.label}
+            </Button>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {inputAmount && quote.error ? (
-          <QuoteError message={quote.error} onRetry={quote.refetch} />
-        ) : inputAmount && quote.isLoading ? (
-          <Skeleton className="h-32 w-full" />
-        ) : inputAmount && quote.amountOut !== undefined && quote.minAmountOut !== undefined ? (
-          <QuoteDetails
-            vault={vault}
-            token={token}
-            inputAmount={inputAmount}
-            shares={quote.amountOut}
-            minShares={quote.minAmountOut}
-          />
-        ) : null}
+      <PositionCard vault={vault} chainKey={chainKey} address={wallet.address} />
 
-        <RiskNotice />
-
-        <div className="flex flex-col gap-2">
-          <Button size="lg" disabled={action.disabled} onClick={action.onClick}>
-            {action.label}
-          </Button>
-          {action.hint && <p className="text-center text-xs text-muted-foreground">{action.hint}</p>}
-        </div>
-      </CardContent>
-    </Card>
+      {review && (
+        <DepositDialog
+          review={review}
+          onClose={completed => {
+            setReview(null);
+            if (completed) setAmountText('');
+          }}
+        />
+      )}
+    </div>
   );
 }
