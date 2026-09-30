@@ -1,18 +1,29 @@
+import { useState } from 'react';
 import { NextPrompt } from '@/components/workshop/NextPrompt';
+import { DEFAULT_VAULT_NAME } from '@/config/workshop';
+import { useEvmWallet } from '@/wallet';
+import { DepositForm } from './components/DepositForm';
+import { VaultGrid } from './components/VaultGrid';
+import { useVaults } from './hooks/useVaults';
 
-/**
- * Mount point for the Leverage Yield feature. Replace the rest of this page with the vault UI.
- *
- * Start here: docs/WORKSHOP.md.
- */
+/** Leverage Yield: browse pooled lsoda* ERC-4626 vaults and deposit via SODAX intents. */
 export function LeverageYieldPage() {
+  const vaults = useVaults();
+  const { address } = useEvmWallet();
+  const [vaultName, setVaultName] = useState(DEFAULT_VAULT_NAME);
+
+  const selectVault = (name: string) => {
+    setVaultName(name);
+    document.getElementById('deposit')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <NextPrompt next={1} />
-      <p className="text-center text-sm text-muted-foreground">
-        Wallet connection, the SODAX SDK and the theme are already wired. You build the vault UI in{' '}
-        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">src/features/leverage-yield/</code>.
-      </p>
+    <div className="flex flex-col gap-10">
+      <NextPrompt next={4} />
+      <VaultGrid vaults={vaults} address={address} selected={vaultName} onSelect={selectVault} />
+      <section id="deposit" className="scroll-mt-20">
+        <DepositForm vaultName={vaultName} onVaultChange={setVaultName} />
+      </section>
     </div>
   );
 }
