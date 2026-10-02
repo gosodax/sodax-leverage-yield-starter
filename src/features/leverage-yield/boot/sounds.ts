@@ -59,6 +59,11 @@ function audioCtor(): Ctor | undefined {
   return w.AudioContext ?? w.webkitAudioContext;
 }
 
+function hasGesture(): boolean {
+  const activation = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+  return activation ? activation.hasBeenActive : true;
+}
+
 /** Create / resume the AudioContext. Call from a user gesture. */
 export function unlockAudio(): void {
   try {
@@ -70,7 +75,7 @@ export function unlockAudio(): void {
       master.gain.value = 0.25;
       master.connect(ctx.destination);
     }
-    if (ctx.state === 'suspended') void ctx.resume().catch(() => {});
+    if (ctx.state === 'suspended' && hasGesture()) void ctx.resume().catch(() => {});
   } catch {
     ctx = undefined;
   }
@@ -78,7 +83,7 @@ export function unlockAudio(): void {
 
 function ready(): { ac: AudioContext; out: GainNode } | undefined {
   if (muted || !ctx || !master) return undefined;
-  if (ctx.state === 'suspended') void ctx.resume().catch(() => {});
+  if (ctx.state === 'suspended' && hasGesture()) void ctx.resume().catch(() => {});
   return { ac: ctx, out: master };
 }
 

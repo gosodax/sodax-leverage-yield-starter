@@ -116,6 +116,8 @@ function PostScreen({ onDone }: { onDone: () => void }) {
   const [count, setCount] = useState(0);
   const [memory, setMemory] = useState(0);
   const reduced = useRef(prefersReducedMotion()).current;
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
 
   useEffect(() => {
     const speed = reduced ? 0.25 : 1;
@@ -125,9 +127,9 @@ function PostScreen({ onDone }: { onDone: () => void }) {
       at += line.delay * speed;
       timers.push(setTimeout(() => setCount(i + 1), at));
     });
-    timers.push(setTimeout(onDone, at + 900 * speed));
+    timers.push(setTimeout(() => doneRef.current(), at + 900 * speed));
     return () => timers.forEach(clearTimeout);
-  }, [onDone, reduced]);
+  }, [reduced]);
 
   const counterIndex = POST_LINES.findIndex(l => l.counter);
   const counting = count > counterIndex;
@@ -187,10 +189,12 @@ function SodaStar() {
 
 function Splash({ onDone }: { onDone: () => void }) {
   const reduced = useRef(prefersReducedMotion()).current;
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
   useEffect(() => {
-    const timer = setTimeout(onDone, reduced ? 1200 : 3200);
+    const timer = setTimeout(() => doneRef.current(), reduced ? 1200 : 3200);
     return () => clearTimeout(timer);
-  }, [onDone, reduced]);
+  }, [reduced]);
 
   return (
     <div className="w2k flex flex-1 items-center justify-center bg-[var(--win-text)] p-4">
