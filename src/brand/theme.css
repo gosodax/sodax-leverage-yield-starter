@@ -5,52 +5,53 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Theme: Windows XP "Luna" blue. Square-ish, beveled, Tahoma.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
-  --card: #ffffff;
-  --card-foreground: #483434;
-  --popover: #ffffff;
-  --popover-foreground: #483434;
+  --background: #ece9d8; /* classic window/control face */
+  --foreground: #000000;
+  --card: #ece9d8;
+  --card-foreground: #000000;
+  --popover: #ece9d8;
+  --popover-foreground: #000000;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #245edc; /* xp button/titlebar blue */
+  --primary-light: #5b8def; /* top bevel highlight for gradients */
+  --primary-hover: #1941a5; /* pressed/darker */
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #d4d0c8; /* classic gray button face */
+  --secondary-light: #ffffff; /* top bevel highlight */
+  --secondary-foreground: #000000;
+  --accent: #ffc20e; /* xp flag yellow: accents on primary surfaces only */
+  --accent-foreground: #0a246a;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #d4d0c8;
+  --muted-foreground: #4d4d4d;
+  --subtle-foreground: #6d6d6d;
+  --border: #716f64; /* beveled edge, dark side */
+  --input: #7f9db9; /* classic xp textbox border */
+  --ring: #3169c6;
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
+  /* Hero band (title bar: primary surface with light text) */
+  --hero: #0a246a;
   --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero-muted: #9db9eb;
+  --hero-accent: #ffc20e;
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #c83c3c;
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fde8e8;
+  --success: #2e8b2e;
+  --success-muted: #e6f4e6;
+  --notice: #ffffcc; /* classic xp tooltip yellow */
 
   /* Shape and type */
-  --radius: 16px;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --radius: 8px;
+  --font-sans: Tahoma, Verdana, Geneva, sans-serif;
+  --font-display: Tahoma, Verdana, Geneva, sans-serif;
+  --font-accent: Tahoma, Verdana, Geneva, sans-serif;
 }

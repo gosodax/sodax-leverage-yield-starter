@@ -4,18 +4,20 @@ import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm border font-medium shadow-[inset_0_1px_0_rgba(255,255,255,.6),0_1px_1px_rgba(0,0,0,.25)] transition-colors active:shadow-[inset_0_1px_3px_rgba(0,0,0,.35)] active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:active:translate-y-0 [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary-hover',
-        secondary: 'bg-secondary text-secondary-foreground font-semibold hover:bg-muted',
-        outline: 'border border-input bg-card text-foreground hover:bg-secondary',
-        ghost: 'text-foreground hover:bg-secondary',
-        destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
+        default:
+          'border-primary-hover bg-gradient-to-b from-primary-light to-primary text-primary-foreground hover:to-primary-hover',
+        secondary:
+          'border-border bg-gradient-to-b from-secondary-light to-secondary text-secondary-foreground font-semibold hover:to-muted',
+        outline: 'border-input bg-card text-foreground shadow-none hover:bg-secondary',
+        ghost: 'border-transparent text-foreground shadow-none hover:bg-secondary',
+        destructive: 'border-destructive bg-destructive text-destructive-foreground hover:opacity-90',
         /** For use on the hero / primary surfaces. */
-        accent: 'bg-accent text-accent-foreground font-semibold hover:opacity-90',
-        link: 'text-primary underline-offset-4 hover:underline',
+        accent: 'border-primary-hover bg-accent text-accent-foreground font-semibold hover:opacity-90',
+        link: 'border-transparent text-primary underline-offset-4 shadow-none hover:underline',
       },
       size: {
         default: 'h-11 px-5 text-sm',

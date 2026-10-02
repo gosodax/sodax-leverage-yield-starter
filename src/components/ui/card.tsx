@@ -2,7 +2,15 @@ import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
 export function Card({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('rounded-lg border bg-card text-card-foreground shadow-sm', className)} {...props} />;
+  return (
+    <div
+      className={cn(
+        'rounded-lg border-2 border-border bg-card text-card-foreground shadow-[inset_1px_1px_0_rgba(255,255,255,.7),2px_2px_4px_rgba(0,0,0,.2)]',
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
 export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
