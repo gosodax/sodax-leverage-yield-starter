@@ -5,52 +5,52 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Balanced's Arctic-inspired system: navy grounds the experience and turquoise identifies actions.
+ * Turquoise is reserved for interactive accents rather than large background surfaces.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
+  --background: #f6f8fb;
+  --foreground: #01002a;
   --card: #ffffff;
-  --card-foreground: #483434;
+  --card-foreground: #01002a;
   --popover: #ffffff;
-  --popover-foreground: #483434;
+  --popover-foreground: #01002a;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #2ca9b7;
+  --primary-hover: #238f9b;
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #eaf6f8;
+  --secondary-foreground: #167783;
+  --accent: #2ca9b7;
+  --accent-foreground: #01002a;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #edf1f6;
+  --muted-foreground: #566078;
+  --subtle-foreground: #778198;
+  --border: #dbe2eb;
+  --input: #cbd5e1;
+  --ring: #2ca9b7;
 
   /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
+  --hero: #01002a;
   --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero-muted: #bec7d7;
+  --hero-accent: #55c5d1;
 
   /* Status */
   --destructive: #ce4446;
   --destructive-foreground: #ffffff;
   --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --success: #14866d;
+  --success-muted: #e6f6f1;
+  --notice: #edf7f8;
 
   /* Shape and type */
-  --radius: 16px;
+  --radius: 12px;
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --font-display: "Inter Variable", "Avenir Next", "Century Gothic", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Inter Variable", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
 }
