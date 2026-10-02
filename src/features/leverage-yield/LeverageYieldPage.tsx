@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardTitleBar } from '@/components/ui/card';
+import { Window } from '@/components/desktop/Window';
+import { useWindowManager } from '@/components/desktop/WindowManager';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NextPrompt } from '@/components/workshop/NextPrompt';
 import { DEFAULT_VAULT_NAME } from '@/config/workshop';
 import { cn } from '@/lib/utils';
@@ -10,6 +12,8 @@ import { WithdrawForm } from './components/WithdrawForm';
 import { useVaults } from './hooks/useVaults';
 
 type Tab = 'deposit' | 'withdraw';
+
+const PANEL_ID = 'panel';
 
 /**
  * SODAX Leverage Yield: browse the lsoda* vaults, deposit from any supported network and token, see your shares and
@@ -24,10 +28,13 @@ export function LeverageYieldPage() {
   const [tab, setTab] = useState<Tab>('deposit');
   const panelRef = useRef<HTMLDivElement>(null);
   const vault = vaults.find(v => v.name === vaultName) ?? vaults[0];
+  const wm = useWindowManager();
 
   function open(name: string, next: Tab) {
     setVaultName(name);
     setTab(next);
+    // Reopen the panel if it was minimized or closed, and bring it to the front.
+    wm.open(PANEL_ID);
     panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -58,9 +65,8 @@ export function LeverageYieldPage() {
         </section>
 
         {vault && (
-          <div ref={panelRef} className="scroll-mt-6 lg:sticky lg:top-6">
-            <Card>
-              <CardTitleBar title={`${tab}.exe`} />
+          <div ref={panelRef} className="scroll-mt-24">
+            <Window id={PANEL_ID} title="vault-actions.exe">
               <CardHeader className="pb-4">
                 <CardTitle className="sr-only">{tab === 'deposit' ? 'Deposit' : 'Withdraw'}</CardTitle>
                 <div className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1" role="tablist">
@@ -90,7 +96,7 @@ export function LeverageYieldPage() {
                   <WithdrawForm vaults={vaults} vault={vault} onVaultChange={setVaultName} />
                 )}
               </CardContent>
-            </Card>
+            </Window>
           </div>
         )}
       </div>

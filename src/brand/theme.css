@@ -103,6 +103,7 @@
   --titlebar-from: #000080;
   --titlebar-to: #0b5cad;
   --titlebar-foreground: #ffffff; /* 6.7:1 on the light end */
+  --taskbar-foreground: #000000; /* on the silver frame: 12.6:1 */
   --hard-shadow: #ff3df2;
   --desktop-grid: #0b2a14;
   --scanline: rgb(0 0 0 / 0.25);
