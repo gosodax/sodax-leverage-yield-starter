@@ -17,6 +17,12 @@ importers:
       '@fontsource-variable/inter':
         specifier: 5.2.8
         version: 5.2.8
+      '@fontsource-variable/oswald':
+        specifier: 5.2.8
+        version: 5.2.8
+      '@fontsource-variable/public-sans':
+        specifier: 5.2.7
+        version: 5.2.7
       '@fontsource/inria-serif':
         specifier: 5.2.8
         version: 5.2.8
@@ -743,6 +749,12 @@ packages:
 
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
+
+  '@fontsource-variable/oswald@5.2.8':
+    resolution: {integrity: sha512-sIXwfKbyHOATgBWOlpR73VMQ8pA8XCToiyy6sL02ZfYEZPpW18TLtpxPBpYXId7xKbWCousOTzlJsa/9rTd8WQ==}
+
+  '@fontsource-variable/public-sans@5.2.7':
+    resolution: {integrity: sha512-4mvade2J3slKkvwRkS+p8T3szet/0vhWoSnuUJTVU81Uo2pRpSZY/Y8bSLRqpSwzIPxjVmRJ53oq6JKP/l/PSg==}
 
   '@fontsource/inria-serif@5.2.8':
     resolution: {integrity: sha512-ik5kL2Z4f3hvfO1Dg/TYgdVsQjyFVEmtt/pzra9NhvAJl5dhbLgQEkMDhzI8FXHHxuoqtVyriOQAvY5vSkxLjQ==}
@@ -7065,6 +7077,10 @@ snapshots:
   '@floating-ui/utils@0.2.12': {}
 
   '@fontsource-variable/inter@5.2.8': {}
+
+  '@fontsource-variable/oswald@5.2.8': {}
+
+  '@fontsource-variable/public-sans@5.2.7': {}
 
   '@fontsource/inria-serif@5.2.8': {}
 

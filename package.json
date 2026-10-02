@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.2.8",
+    "@fontsource-variable/oswald": "5.2.8",
+    "@fontsource-variable/public-sans": "5.2.7",
     "@fontsource/inria-serif": "5.2.8",
     "@fontsource/shrikhand": "5.2.8",
     "@radix-ui/react-dialog": "1.1.15",
