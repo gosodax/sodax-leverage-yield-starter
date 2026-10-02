@@ -3,23 +3,23 @@
  * Paths are relative to the site root and resolved against Vite's base URL.
  */
 export const brand = {
-  appName: 'Leverage Yield',
+  appName: 'Hana Yield',
   tagline:
-    'Deposit from the network you already use. Solvers route it into a pooled vault that earns leveraged staking yield.',
+    'Put idle assets to work from the Hana wallet you already use. Deposit from any network into a pooled vault that earns leveraged staking yield.',
   /** Shown next to the logo in the header. Set to '' to hide. */
   productLabel: 'Vaults',
   logo: {
     /** Logo for light surfaces (header). */
-    onLight: 'brand/logo-on-light.svg',
+    onLight: 'brand/hana-logo-on-light.svg',
     /** Logo for dark / primary surfaces (hero, footer). */
-    onDark: 'brand/logo-on-dark.svg',
-    alt: 'SODAX',
+    onDark: 'brand/hana-logo-on-dark.svg',
+    alt: 'Hana',
   },
   /** Small "Powered by SODAX" credit in the footer. Partners may keep or remove it. */
   poweredBySodax: true,
   links: {
     docs: 'https://docs.sodax.com',
-    website: 'https://sodax.com',
+    website: 'https://www.hanawallet.io',
   },
 } as const;
 

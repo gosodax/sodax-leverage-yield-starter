@@ -5,52 +5,87 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Brand: Hana wallet (hanawallet.io). Deep-night purples on a lilac-white surface, Montserrat type,
+ * lilac/orchid accents on the dark hero only. Every text/surface pair below meets WCAG AA (≥ 4.5:1).
  */
+
+/* Hana's typefaces, served by Google Fonts (latin subset). */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Montserrat Alternates";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/montserratalternates/v18/mFTiWacfw6zH4dthXcyms1lPpC8I_b0juU0xNIPFB7xG-GNxkg.woff2)
+    format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Montserrat Alternates";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/montserratalternates/v18/mFTiWacfw6zH4dthXcyms1lPpC8I_b0juU0xUILFB7xG-GNxkg.woff2)
+    format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
+  --background: #faf9fe; /* lilac white */
+  --foreground: #221542; /* hana dark purple: 16:1 on background */
   --card: #ffffff;
-  --card-foreground: #483434;
+  --card-foreground: #221542;
   --popover: #ffffff;
-  --popover-foreground: #483434;
+  --popover-foreground: #221542;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #4c3d7f; /* hana purple: 9.2:1 with white text */
+  --primary-hover: #3b2f66;
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #efecf6; /* stroke purple */
+  --secondary-foreground: #4c3d7f; /* 7.9:1 */
+  --accent: #d4c5f9; /* light purple: accents on the dark hero only */
+  --accent-foreground: #221542; /* 10.5:1 */
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #efecf6;
+  --muted-foreground: #5e4c78; /* 6.5:1 on muted */
+  --subtle-foreground: #6e6390; /* 5.5:1 on white */
+  --border: #e6e0f7; /* white purple */
+  --input: #d4c5f9;
+  --ring: #6256e9; /* gradient start */
 
   /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
-  --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero: #221542;
+  --hero-foreground: #ffffff; /* 16.8:1 */
+  --hero-muted: #d4c5f9; /* 10.5:1 */
+  --hero-accent: #f0a6ee; /* orchid, from the hana gradient: 9.1:1 */
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #b3261e;
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fcedec;
+  --success: #1b7a3a;
+  --success-muted: #e8f6ec;
+  --notice: #efecf6; /* callouts with a primary left border */
 
   /* Shape and type */
   --radius: 16px;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat Alternates", "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Montserrat Alternates", "Montserrat", ui-sans-serif, system-ui, sans-serif;
 }
