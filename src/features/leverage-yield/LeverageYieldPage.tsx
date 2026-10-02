@@ -40,8 +40,6 @@ export function LeverageYieldPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <NextPrompt next="done" />
-
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         <section className="flex flex-col gap-4">
           <div>
@@ -100,6 +98,9 @@ export function LeverageYieldPage() {
           </div>
         )}
       </div>
+
+      {/* Workshop prompt card, moved below the app at the participant's request. */}
+      <NextPrompt next="done" />
     </div>
   );
 }
