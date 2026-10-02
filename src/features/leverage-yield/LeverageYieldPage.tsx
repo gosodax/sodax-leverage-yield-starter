@@ -6,7 +6,7 @@ import { DEFAULT_VAULT_NAME } from '@/config/workshop';
 import { cn } from '@/lib/utils';
 import { useEvmWallet } from '@/wallet';
 import { BootSequence } from './boot/BootSequence';
-import { playDing, playError, unlockAudio, useMuted } from './boot/sounds';
+import { GESTURE_EVENTS, playDing, playError, unlockAudio, useMuted } from './boot/sounds';
 import { DepositWizard, type FlowNotice } from './components/DepositWizard';
 import { AboutBox, GettingStarted, RecycleBin } from './components/Dialogs';
 import { MyShares, type ShareRowKey, type ShareSummary } from './components/MyShares';
@@ -113,12 +113,10 @@ export function LeverageYieldPage() {
 
   // Sounds (balloon ding, error) need the audio context unlocked by a gesture, even when the boot was skipped.
   useEffect(() => {
-    const unlock = () => void unlockAudio();
-    window.addEventListener('pointerdown', unlock);
-    window.addEventListener('keydown', unlock);
+    const unlock = () => void unlockAudio(true);
+    for (const type of GESTURE_EVENTS) window.addEventListener(type, unlock);
     return () => {
-      window.removeEventListener('pointerdown', unlock);
-      window.removeEventListener('keydown', unlock);
+      for (const type of GESTURE_EVENTS) window.removeEventListener(type, unlock);
     };
   }, []);
 

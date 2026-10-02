@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BuiltOn, Wordmark } from '../win/Logo';
-import { playBootSequence, playStartupChime, unlockAudio, useMuted } from './sounds';
+import { GESTURE_EVENTS, playBootSequence, playStartupChime, unlockAudio, useMuted } from './sounds';
 
 type Phase = 'power' | 'post' | 'splash';
 
@@ -69,9 +69,9 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
   const [muted] = useMuted();
   useEffect(() => {
     let started = false;
-    const start = async () => {
+    const start = async (fromGesture = false) => {
       if (started || doneRef.current) return;
-      if (!(await unlockAudio()) || started || doneRef.current) return;
+      if (!(await unlockAudio(fromGesture)) || started || doneRef.current) return;
       started = true;
       setNeedsGesture(false);
       soundRef.current = playBootSequence();
@@ -79,12 +79,10 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
     void start().then(() => {
       if (!started) setNeedsGesture(true);
     });
-    const onGesture = () => void start();
-    window.addEventListener('pointerdown', onGesture);
-    window.addEventListener('keydown', onGesture);
+    const onGesture = () => void start(true);
+    for (const type of GESTURE_EVENTS) window.addEventListener(type, onGesture);
     return () => {
-      window.removeEventListener('pointerdown', onGesture);
-      window.removeEventListener('keydown', onGesture);
+      for (const type of GESTURE_EVENTS) window.removeEventListener(type, onGesture);
     };
   }, []);
 

@@ -68,7 +68,7 @@ function hasGesture(): boolean {
  * Create / resume the AudioContext. Resolves true once audio is actually running (call it from a user gesture for
  * that to work in browsers with an autoplay policy).
  */
-export async function unlockAudio(): Promise<boolean> {
+export async function unlockAudio(fromGesture = false): Promise<boolean> {
   try {
     const C = audioCtor();
     if (!C) return false;
@@ -78,13 +78,29 @@ export async function unlockAudio(): Promise<boolean> {
       master.gain.value = 0.25;
       master.connect(ctx.destination);
     }
-    if (ctx.state === 'suspended' && hasGesture()) await ctx.resume().catch(() => {});
+    if (ctx.state !== 'running' && (fromGesture || hasGesture())) {
+      // Safari only unlocks when resume() and a sound start happen synchronously inside the gesture handler,
+      // so kick a one-sample silent buffer before awaiting anything.
+      const resumed = ctx.resume().catch(() => {});
+      try {
+        const silent = ctx.createBufferSource();
+        silent.buffer = ctx.createBuffer(1, 1, 22050);
+        silent.connect(ctx.destination);
+        silent.start(0);
+      } catch {
+        // ignore
+      }
+      await resumed;
+    }
     return ctx.state === 'running';
   } catch {
     ctx = undefined;
     return false;
   }
 }
+
+/** Events every browser (Safari included) accepts as a user gesture for audio. */
+export const GESTURE_EVENTS = ['pointerdown', 'pointerup', 'mousedown', 'click', 'touchend', 'keydown'] as const;
 
 /** True when sound can play right now (context running, not muted). */
 export function audioRunning(): boolean {
