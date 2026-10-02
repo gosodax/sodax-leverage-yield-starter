@@ -32,7 +32,7 @@ export function VaultCard({
     params: { vault: vault.vault, holders: address ? SOURCE_CHAINS.map(chainKey => ({ chainKey, address })) : [] },
   });
   const totalShares = shares.reduce((sum, query) => sum + (query.data?.shares ?? 0n), 0n);
-  const firstHolding = shares.find(query => (query.data?.shares ?? 0n) > 0n)?.data;
+  const holdings = shares.flatMap(query => (query.data && query.data.shares > 0n ? [query.data] : []));
   // Exposure is a target-strategy metric returned with the APR snapshot, not the live position read.
   const exposure = apr.data ? 10n ** 18n + apr.data.leverageMultiplierWad : undefined;
   const health = position.data?.healthFactor;
@@ -55,19 +55,25 @@ export function VaultCard({
         <Metric label="LTV" value={formatBps(position.data?.ltv)} />
         <Metric label="Your shares" value={address ? formatTokenAmount(totalShares, 18) : 'Connect wallet'} />
       </CardContent>
-      <CardFooter className="mt-auto">
+      <CardFooter className="mt-auto flex flex-wrap gap-2">
         <Button className="flex-1" onClick={onDeposit}>
           Deposit
         </Button>
-        {firstHolding && (
+        {holdings.map(holding => (
           <Button
+            key={holding.chainKey}
             className="flex-1"
             variant="outline"
-            onClick={() => onWithdraw(firstHolding.chainKey as SourceChainKey, firstHolding.shares)}
+            onClick={() => onWithdraw(holding.chainKey as SourceChainKey, holding.shares)}
           >
-            Withdraw
+            Withdraw from{' '}
+            {holding.chainKey === SOURCE_CHAINS[0]
+              ? 'Base'
+              : holding.chainKey === SOURCE_CHAINS[1]
+                ? 'Arbitrum'
+                : 'Sonic'}
           </Button>
-        )}
+        ))}
       </CardFooter>
     </Card>
   );

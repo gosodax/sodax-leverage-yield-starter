@@ -1,6 +1,6 @@
 import { type Address, useLeverageYieldQuote } from '@sodax/dapp-kit';
 import type { SourceChainKey } from '@/config/workshop';
-import { DEFAULT_SLIPPAGE_BPS } from '@/config/workshop';
+import { DEFAULT_SLIPPAGE_BPS, REFETCH_MS } from '@/config/workshop';
 import { buildDepositQuotePayload, buildWithdrawQuotePayload, minimumOutputFromQuote } from '../lib/quote';
 
 export function useDepositQuote(input: {
@@ -18,7 +18,7 @@ export function useDepositQuote(input: {
           inputAmount: input.amount,
         })
       : undefined;
-  const query = useLeverageYieldQuote({ params: { payload } });
+  const query = useLeverageYieldQuote({ params: { payload }, queryOptions: { refetchInterval: REFETCH_MS } });
   return {
     ...query,
     minimum: query.data?.ok ? minimumOutputFromQuote(query.data.value.quoted_amount, DEFAULT_SLIPPAGE_BPS) : undefined,
@@ -40,7 +40,7 @@ export function useWithdrawQuote(input: {
           shares: input.shares,
         })
       : undefined;
-  const query = useLeverageYieldQuote({ params: { payload } });
+  const query = useLeverageYieldQuote({ params: { payload }, queryOptions: { refetchInterval: REFETCH_MS } });
   return {
     ...query,
     minimum: query.data?.ok ? minimumOutputFromQuote(query.data.value.quoted_amount, DEFAULT_SLIPPAGE_BPS) : undefined,

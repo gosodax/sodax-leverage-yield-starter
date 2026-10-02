@@ -1,7 +1,10 @@
 import {
   type Address,
+  isUserRejectedError,
   type LeverageYieldVault,
+  useBalances,
   useLeverageYieldDeposit,
+  useLeverageYieldDetailedStatus,
   useLeverageYieldVaultSwap,
   useLeverageYieldWithdraw,
   useSodaxContext,
@@ -18,10 +21,12 @@ import {
   DEFAULT_TOKEN_KEY,
   getDepositTokens,
   getTokenByKey,
+  NATIVE_GAS_RESERVE,
+  REFETCH_MS,
   SOURCE_CHAINS,
   type SourceChainKey,
 } from '@/config/workshop';
-import { chainName } from '@/lib/chains';
+import { chainName, explorerTxUrl } from '@/lib/chains';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/format';
 import { useEvmWallet } from '@/wallet';
 import { useDepositQuote, useWithdrawQuote } from '../hooks/useVaultQuotes';
@@ -48,9 +53,12 @@ export function VaultDialog({
   const [tokenKey, setTokenKey] = useState(DEFAULT_TOKEN_KEY);
   const [amount, setAmount] = useState('');
   const [notice, setNotice] = useState<string>();
+  const [submitted, setSubmitted] = useState<{ chain: SourceChainKey; hash: string }>();
   const token = getTokenByKey(chain, tokenKey) ?? getDepositTokens(chain)[0];
   const parsed = parseTokenAmount(amount, tab === 'withdraw' ? 18 : (token?.decimals ?? 18));
-  const wallet = useEvmWallet(chain);
+  // A withdrawal spends shares on the holder's source chain; its selected network is only the destination.
+  const signingChain = tab === 'withdraw' ? heldChain : chain;
+  const wallet = useEvmWallet(signingChain);
   const depositQuote = useDepositQuote({
     vault: vault.vault,
     token: token?.address as Address | undefined,
@@ -70,7 +78,31 @@ export function VaultDialog({
   const { mutateAsyncSafe: approve } = useSwapApprove();
   const { mutateAsyncSafe: execute, isPending } = useLeverageYieldVaultSwap();
   const choices = useMemo(() => getDepositTokens(chain), [chain]);
+  const sourceTokens = useMemo(() => {
+    const native = getDepositTokens(signingChain).find(
+      item => item.address === '0x0000000000000000000000000000000000000000',
+    );
+    return [tab === 'deposit' ? token : undefined, native].filter((item): item is NonNullable<typeof item> => !!item);
+  }, [signingChain, tab, token]);
+  const balances = useBalances({
+    params: { chainKey: signingChain, address: wallet.address, tokens: sourceTokens },
+    queryOptions: { refetchInterval: REFETCH_MS },
+  });
+  const status = useLeverageYieldDetailedStatus({
+    params: { srcChainKey: submitted?.chain, srcTxHash: submitted?.hash },
+    queryOptions: { refetchInterval: REFETCH_MS },
+  });
   const isOverShareBalance = tab === 'withdraw' && !!parsed && parsed > heldShares;
+  const tokenBalance = token ? balances.data?.[token.address] : undefined;
+  const nativeToken = sourceTokens.find(item => item.address === '0x0000000000000000000000000000000000000000');
+  const nativeBalance = nativeToken ? balances.data?.[nativeToken.address] : undefined;
+  const isNativeInput = token?.address === '0x0000000000000000000000000000000000000000';
+  const insufficientInputBalance =
+    tab === 'deposit' && !!parsed && (tokenBalance === undefined || tokenBalance < parsed);
+  const insufficientGasReserve =
+    !!wallet.address &&
+    (nativeBalance === undefined ||
+      nativeBalance < NATIVE_GAS_RESERVE[signingChain] + (tab === 'deposit' && isNativeInput ? (parsed ?? 0n) : 0n));
   const ready =
     !!wallet.address &&
     !!wallet.walletProvider &&
@@ -78,6 +110,10 @@ export function VaultDialog({
     !!parsed &&
     !!quote.minimum &&
     !isOverShareBalance &&
+    !insufficientInputBalance &&
+    !insufficientGasReserve &&
+    !balances.isLoading &&
+    !balances.isError &&
     !isPending;
 
   const updateChain = (value: string) => {
@@ -90,6 +126,7 @@ export function VaultDialog({
     );
     setAmount('');
     setNotice(undefined);
+    setSubmitted(undefined);
   };
 
   const submit = async () => {
@@ -114,7 +151,10 @@ export function VaultDialog({
             inputAmount: parsed,
             minOutputAmount: quote.minimum,
           });
-    if (!built.ok) return setNotice('The vault order could not be prepared. Check your wallet and try again.');
+    if (!built.ok) {
+      if (isUserRejectedError(built.error)) return;
+      return setNotice('The vault order could not be prepared. Check the amount, network, and quote, then try again.');
+    }
 
     if (tab === 'deposit') {
       const allowance = await sodax.swaps.isAllowanceValid({
@@ -122,15 +162,28 @@ export function VaultDialog({
         raw: false,
         walletProvider: wallet.walletProvider,
       });
-      if (!allowance.ok) return setNotice('We could not verify token approval. Please try again.');
+      if (!allowance.ok) {
+        if (isUserRejectedError(allowance.error)) return;
+        return setNotice('We could not verify token approval. Please try again.');
+      }
       if (!allowance.value) {
         const approval = await approve({ params: built.value.params, walletProvider: wallet.walletProvider });
-        if (!approval.ok) return setNotice('Approval was not completed. No deposit was sent.');
+        if (!approval.ok) {
+          if (isUserRejectedError(approval.error)) return;
+          return setNotice('Approval was not completed. No deposit was sent.');
+        }
       }
     }
 
     const result = await execute({ ...built.value, walletProvider: wallet.walletProvider });
-    if (!result.ok) return setNotice('The vault order was not submitted. No funds were moved by this app.');
+    if (!result.ok) {
+      if (isUserRejectedError(result.error)) return;
+      return setNotice('The vault order was not submitted. No funds were moved by this app.');
+    }
+    setSubmitted({
+      chain: result.value.intentDeliveryInfo.srcChainKey as SourceChainKey,
+      hash: result.value.intentDeliveryInfo.srcTxHash,
+    });
     setNotice(
       'Order submitted. Keep this window open while SODAX delivers it to Sonic and an independent solver fills your vault shares.',
     );
@@ -139,7 +192,7 @@ export function VaultDialog({
   const actionLabel = !wallet.isConnected
     ? 'Connect wallet'
     : wallet.isWrongChain
-      ? `Switch to ${chainName(chain)}`
+      ? `Switch to ${chainName(signingChain)}`
       : tab === 'deposit'
         ? 'Review & deposit'
         : 'Review & withdraw';
@@ -214,6 +267,20 @@ export function VaultDialog({
             </span>
           )}
         </label>
+        {wallet.address && balances.isLoading && (
+          <p className="text-sm text-muted-foreground">Checking wallet balance…</p>
+        )}
+        {insufficientInputBalance && (
+          <p role="alert" className="text-sm text-destructive">
+            Your {token?.symbol} balance on {chainName(signingChain)} is too low for this deposit.
+          </p>
+        )}
+        {insufficientGasReserve && (
+          <p role="alert" className="text-sm text-destructive">
+            Keep at least {formatTokenAmount(NATIVE_GAS_RESERVE[signingChain], 18)} native tokens on{' '}
+            {chainName(signingChain)} for gas.
+          </p>
+        )}
         <Callout variant="notice">
           Real funds: variable APR and leveraged-vault risk can reduce share value. You will always approve transactions
           in your own wallet.
@@ -242,6 +309,25 @@ export function VaultDialog({
         {notice && (
           <p role="alert" className="text-sm text-muted-foreground">
             {notice}
+          </p>
+        )}
+        {submitted && (
+          <p className="text-sm text-muted-foreground">
+            {status.isFetching
+              ? 'Tracking submission…'
+              : status.data?.ok
+                ? 'Order is being tracked by SODAX. Balances refresh as settlement completes.'
+                : 'Order submitted; SODAX status is temporarily unavailable.'}{' '}
+            {explorerTxUrl(submitted.chain, submitted.hash) && (
+              <a
+                className="underline"
+                href={explorerTxUrl(submitted.chain, submitted.hash)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View source transaction
+              </a>
+            )}
           </p>
         )}
         <Button
