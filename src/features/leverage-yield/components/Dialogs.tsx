@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { SDK_VERSION } from '@sodax/sdk';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Btn } from '../win/controls';
 import { BottleIcon, CaptionGlyph, CrateIcon, WizardIcon } from '../win/icons';
 import { BuiltOn, Flag, Wordmark } from '../win/Logo';
@@ -197,5 +197,87 @@ export function RecycleBin({ open, onOpenChange }: { open: boolean; onOpenChange
     >
       <p className="p-4">The Recycle Bin is empty. Vault shares can't be thrown away: withdraw them instead.</p>
     </MessageBox>
+  );
+}
+
+export type ShutdownChoice = 'shutdown' | 'restart' | 'logoff';
+
+/** "Shut Down Windows"-style dialog: shut down, restart or log off (disconnect the wallet). */
+export function ShutdownDialog({
+  open,
+  onOpenChange,
+  onChoose,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onChoose: (choice: ShutdownChoice) => void;
+}) {
+  const [choice, setChoice] = useState<ShutdownChoice>('shutdown');
+  const help: Record<ShutdownChoice, string> = {
+    shutdown: 'Ends your session and shuts down HazyVault2000 so that you can safely turn off power.',
+    restart: 'Ends your session, shuts down HazyVault2000 and starts it again.',
+    logoff: 'Disconnects your wallet. Your vault shares stay safe in your hub wallet on Sonic.',
+  };
+  return (
+    <MessageBox
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Shut Down HazyVault2000"
+      footer={
+        <>
+          <Btn
+            isDefault
+            onClick={() => {
+              onOpenChange(false);
+              onChoose(choice);
+            }}
+          >
+            OK
+          </Btn>
+          <Btn onClick={() => onOpenChange(false)}>Cancel</Btn>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-3">
+        <div className="bevel-thin-in flex items-center gap-3 bg-[var(--win-title-a)] px-4 py-3">
+          <Wordmark />
+        </div>
+        <div className="flex items-start gap-3 px-4 pb-1">
+          <Flag className="mt-1 h-8 w-10" />
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <label htmlFor="shutdown-choice">What do you want the computer to do?</label>
+            <select
+              id="shutdown-choice"
+              className="w2k-select w-full"
+              value={choice}
+              onChange={event => setChoice(event.target.value as ShutdownChoice)}
+            >
+              <option value="shutdown">Shut down</option>
+              <option value="restart">Restart</option>
+              <option value="logoff">Log off (disconnect wallet)</option>
+            </select>
+            <p className="text-[var(--win-dark)]">{help[choice]}</p>
+          </div>
+        </div>
+      </div>
+    </MessageBox>
+  );
+}
+
+/** The famous end screen. Click (or press a key) to power back on. */
+export function SafeToTurnOff({ onPower }: { onPower: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => ref.current?.focus(), []);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onPower}
+      className="fixed inset-0 z-[110] flex cursor-pointer items-center justify-center bg-[var(--win-text)] p-6 text-center"
+    >
+      <span className="text-[22px] font-bold text-[var(--led-amber)]" style={{ fontFamily: 'var(--font-sans)' }}>
+        It's now safe to turn off your computer.
+      </span>
+    </button>
   );
 }

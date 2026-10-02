@@ -666,3 +666,18 @@
   padding: 0 !important;
   min-height: 0 !important;
 }
+.w2k-desktop-icon[data-selected] span:last-child {
+  background: var(--win-select);
+  outline: 1px dotted var(--win-highlight);
+}
+/* Win2k "Use drop shadows for icon labels on the desktop" */
+.w2k-desktop-icon span:last-child {
+  text-shadow: 1px 1px 0 var(--win-text);
+}
+.w2k-desktop-icon[data-selected] span:last-child {
+  text-shadow: none;
+}
+/* Text fields show the caret, not a dotted focus rectangle (that overlapped the text). */
+.w2k-input:focus-visible {
+  outline: none;
+}

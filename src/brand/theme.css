@@ -119,6 +119,56 @@
   --flag-blue: #2b6fd6;
   --flag-yellow: #f7c51e;
 
+  /* ---- Minesweeper (owned by apps/minesweeper) ---- */
+  --mine-1: #0000ff;
+  --mine-2: #008000;
+  --mine-3: #ff0000;
+  --mine-4: #000080;
+  --mine-5: #800000;
+  --mine-6: #008080;
+  --mine-7: #000000;
+  --mine-8: #808080;
+  --mine-led-bg: #000000;
+  --mine-led-on: #ff0000;
+  --mine-led-off: #3a0000;
+  --mine-hit: #ff0000;
+  --mine-smiley: #ffff00;
+  /* ---- end Minesweeper ---- */
+
+  /* ---- Pinball (owned by apps/pinball) ---- */
+  --pin-bg: #0a0a2a;
+  --pin-table: #10184a;
+  --pin-rail: #c0c8d8;
+  --pin-ball: #e8eef8;
+  --pin-bumper: #ff8a1f;
+  --pin-bumper-lit: #ffe14d;
+  --pin-flipper: #d0121b;
+  --pin-light-off: #3a2a10;
+  --pin-light-on: #ffd23a;
+  --pin-text: #ffd23a;
+  --pin-accent: #3dff6e;
+  --pin-accent-dim: #0f3a1c;
+  --pin-panel: #000000;
+  --pin-star: #9fb4ff;
+  --pin-grid: #1c2a6e;
+  --pin-rail-dark: #5a6478;
+  --pin-ball-shade: #6f7a8c;
+  --pin-shadow: rgb(0 0 0 / 0.45);
+  --pin-can: #d0121b;
+  --pin-can-dark: #7e0a10;
+  --pin-can-light: #ff5a4f;
+  --pin-logo: #ff8a1f;
+  --pin-silver: #e9ecef;
+  --pin-silver-dark: #6f7780;
+  --pin-sling: #ff5a4f;
+  --pin-sling-lit: #ffffff;
+  --pin-saucer: #000000;
+  --pin-saucer-ring: #3dff6e;
+  --pin-bubble: #ffffff;
+  --pin-popup: #ffffff;
+  --pin-tilt: #ff2a2a;
+  /* ---- end Pinball ---- */
+
   /* Shape and type */
   --radius: 0px;
   --font-sans: Tahoma, "Segoe UI", Verdana, "MS Sans Serif", Geneva, sans-serif;

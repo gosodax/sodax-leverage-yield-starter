@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { brand } from '@/brand/brand.config';
 import { NextPrompt } from '@/components/workshop/NextPrompt';
 import type { SourceChainKey } from '@/config/workshop';
@@ -8,7 +9,7 @@ import { useEvmWallet } from '@/wallet';
 import { BootSequence } from './boot/BootSequence';
 import { GESTURE_EVENTS, playDing, playError, unlockAudio, useMuted } from './boot/sounds';
 import { DepositWizard, type FlowNotice } from './components/DepositWizard';
-import { AboutBox, GettingStarted, RecycleBin } from './components/Dialogs';
+import { AboutBox, GettingStarted, RecycleBin, SafeToTurnOff, ShutdownDialog } from './components/Dialogs';
 import { MyShares, type ShareRowKey, type ShareSummary } from './components/MyShares';
 import { VaultProperties } from './components/VaultProperties';
 import { VaultShelf } from './components/VaultShelf';
@@ -16,9 +17,12 @@ import { WithdrawWizard } from './components/WithdrawWizard';
 import { useUsdPrices } from './hooks/useVaultData';
 import { useVaults } from './hooks/useVaults';
 import { flavorOf } from './lib/vaults';
-import { Taskbar } from './shell/Taskbar';
+import { APP_IDS, APPS, type AppId } from './shell/apps';
+import { DesktopMenu } from './shell/DesktopMenu';
+import { Taskbar, type TaskWindow } from './shell/Taskbar';
 import { Wallpaper } from './shell/Wallpaper';
-import { BottleIcon, CrateIcon, GlobeIcon, NotepadIcon, WizardIcon } from './win/icons';
+import { FloatingWindow, type FloatPos } from './win/FloatingWindow';
+import { BottleIcon, CrateIcon, GlobeIcon, Hourglass, NotepadIcon, WizardIcon } from './win/icons';
 import { Flag } from './win/Logo';
 import { MenuBar } from './win/MenuBar';
 import { Window } from './win/Window';
@@ -26,6 +30,8 @@ import './win2k.css';
 
 type WinId = 'dispenser' | 'shares' | 'workshop';
 type WinState = { open: boolean; minimized: boolean };
+type AppState = { open: boolean; minimized: boolean; maximized: boolean; pos: FloatPos };
+type FocusId = WinId | AppId;
 
 const WINDOW_TITLES: Record<WinId, string> = {
   dispenser: 'Vault Dispenser',
@@ -70,6 +76,13 @@ export function LeverageYieldPage() {
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [binOpen, setBinOpen] = useState(false);
+  const [shutdownOpen, setShutdownOpen] = useState(false);
+  const [poweredOff, setPoweredOff] = useState(false);
+  const [coldBoot, setColdBoot] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<string>();
+  const [desktopMenu, setDesktopMenu] = useState<{ x: number; y: number } | null>(null);
+  const closeDesktopMenu = useCallback(() => setDesktopMenu(null), []);
+  const queryClient = useQueryClient();
 
   const [selected, setSelected] = useState<string>(
     () => vaults.find(v => v.name === DEFAULT_VAULT_NAME)?.name ?? vaults[0]?.name ?? '',
@@ -96,7 +109,15 @@ export function LeverageYieldPage() {
     shares: { open: true, minimized: false },
     workshop: { open: true, minimized: true },
   });
-  const [active, setActive] = useState<WinId>('dispenser');
+  const [active, setActive] = useState<FocusId>('dispenser');
+  const [apps, setApps] = useState<Record<AppId, AppState>>(
+    () =>
+      Object.fromEntries(
+        APP_IDS.map(id => [id, { open: false, minimized: false, maximized: false, pos: APPS[id].offset }]),
+      ) as Record<AppId, AppState>,
+  );
+  /** Stacking order of floating app windows, last = top. */
+  const [stack, setStack] = useState<AppId[]>([]);
   const [maximized, setMaximized] = useState(false);
 
   const [depositOpen, setDepositOpen] = useState(false);
@@ -159,7 +180,32 @@ export function LeverageYieldPage() {
   };
   const minimize = (id: WinId) => setWindows(prev => ({ ...prev, [id]: { ...prev[id], minimized: true } }));
   const close = (id: WinId) => setWindows(prev => ({ ...prev, [id]: { open: false, minimized: false } }));
+  const patchApp = useCallback(
+    (id: AppId, next: Partial<AppState>) => setApps(prev => ({ ...prev, [id]: { ...prev[id], ...next } })),
+    [],
+  );
+  const focusApp = useCallback((id: AppId) => {
+    setActive(id);
+    setStack(prev => (prev[prev.length - 1] === id ? prev : [...prev.filter(x => x !== id), id]));
+  }, []);
+  const openApp = (id: AppId) => {
+    patchApp(id, { open: true, minimized: false });
+    focusApp(id);
+  };
+  const closeApp = (id: AppId) => {
+    patchApp(id, { open: false, minimized: false, maximized: false });
+    setStack(prev => prev.filter(x => x !== id));
+    if (active === id) setActive('dispenser');
+  };
+  const isApp = (id: string): id is AppId => (APP_IDS as string[]).includes(id);
+
   const onTaskClick = (id: string) => {
+    if (isApp(id)) {
+      const a = apps[id];
+      if (a.minimized || active !== id) openApp(id);
+      else patchApp(id, { minimized: true });
+      return;
+    }
     const w = windows[id as WinId];
     if (!w) return;
     if (w.minimized || active !== id) openWindow(id as WinId);
@@ -187,14 +233,22 @@ export function LeverageYieldPage() {
     () =>
       (Object.keys(windows) as WinId[])
         .filter(id => windows[id].open)
-        .map(id => ({
-          id,
-          title: WINDOW_TITLES[id],
-          icon: id === 'dispenser' ? <BottleIcon /> : id === 'shares' ? <CrateIcon /> : <NotepadIcon />,
-          active: active === id,
-          minimized: windows[id].minimized,
-        })),
-    [windows, active],
+        .map(
+          (id): TaskWindow => ({
+            id,
+            title: WINDOW_TITLES[id],
+            icon: id === 'dispenser' ? <BottleIcon /> : id === 'shares' ? <CrateIcon /> : <NotepadIcon />,
+            active: active === id,
+            minimized: windows[id].minimized,
+          }),
+        )
+        .concat(
+          APP_IDS.filter(id => apps[id].open).map((id): TaskWindow => {
+            const { Icon } = APPS[id];
+            return { id, title: APPS[id].title, icon: <Icon />, active: active === id, minimized: apps[id].minimized };
+          }),
+        ),
+    [windows, apps, active],
   );
 
   const startItems = [
@@ -226,6 +280,16 @@ export function LeverageYieldPage() {
       icon: <GlobeIcon size={24} />,
       onSelect: () => window.open(brand.links.docs, '_blank', 'noopener,noreferrer'),
     },
+    ...APP_IDS.map((id, i) => {
+      const { Icon } = APPS[id];
+      return {
+        id,
+        label: APPS[id].title,
+        icon: <Icon size={24} />,
+        onSelect: () => openApp(id),
+        separatorBefore: i === 0,
+      };
+    }),
     {
       id: 'help',
       label: 'Getting Started',
@@ -240,10 +304,10 @@ export function LeverageYieldPage() {
       onSelect: () => setAboutOpen(true),
     },
     {
-      id: 'restart',
-      label: 'Restart…',
+      id: 'shutdown',
+      label: 'Shut Down…',
       icon: <Flag className="h-5 w-6" />,
-      onSelect: () => setBooting(true),
+      onSelect: () => setShutdownOpen(true),
       separatorBefore: true,
     },
   ];
@@ -291,25 +355,100 @@ export function LeverageYieldPage() {
 
   return (
     <div className="w2k w2k-desktop relative pb-[34px]">
-      {booting && <BootSequence onDone={finishBoot} />}
+      {booting && (
+        <BootSequence
+          cold={coldBoot}
+          onDone={() => {
+            setColdBoot(false);
+            finishBoot();
+          }}
+        />
+      )}
+      {poweredOff && (
+        <SafeToTurnOff
+          onPower={() => {
+            setPoweredOff(false);
+            setColdBoot(true);
+            setBooting(true);
+          }}
+        />
+      )}
       <Wallpaper />
 
-      <div className="relative z-10 flex gap-3 p-2 sm:p-3">
+      <div
+        className="relative z-10 flex gap-3 p-2 sm:p-3"
+        onPointerDown={() => setSelectedIcon(undefined)}
+        onContextMenu={event => {
+          // Only the bare desktop: windows and icons keep the browser's own behaviour.
+          if (event.target !== event.currentTarget && !(event.target as HTMLElement).dataset.desktop) return;
+          event.preventDefault();
+          setDesktopMenu({ x: event.clientX, y: event.clientY });
+        }}
+      >
         {/* desktop icons */}
-        <nav aria-label="Desktop" className="hidden w-[80px] shrink-0 flex-col gap-4 pt-1 lg:-ml-1 lg:flex">
-          <DesktopIcon label="Vault Dispenser" icon={<BottleIcon size={32} />} onOpen={() => openWindow('dispenser')} />
-          <DesktopIcon label="My Shares" icon={<CrateIcon size={32} />} onOpen={() => openWindow('shares')} />
-          <DesktopIcon label="Deposit Wizard" icon={<WizardIcon size={32} />} onOpen={() => startDeposit()} />
-          <DesktopIcon label="WORKSHOP.TXT" icon={<NotepadIcon size={32} />} onOpen={() => openWindow('workshop')} />
+        <nav
+          data-desktop="1"
+          aria-label="Desktop"
+          className="hidden w-[80px] shrink-0 flex-col gap-4 pt-1 lg:-ml-1 lg:flex"
+        >
           <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
+            label="Vault Dispenser"
+            icon={<BottleIcon size={32} />}
+            onOpen={() => openWindow('dispenser')}
+          />
+          <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
+            label="My Shares"
+            icon={<CrateIcon size={32} />}
+            onOpen={() => openWindow('shares')}
+          />
+          <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
+            label="Deposit Wizard"
+            icon={<WizardIcon size={32} />}
+            onOpen={() => startDeposit()}
+          />
+          <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
+            label="WORKSHOP.TXT"
+            icon={<NotepadIcon size={32} />}
+            onOpen={() => openWindow('workshop')}
+          />
+          <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
             label="SODAX Docs"
             icon={<GlobeIcon size={32} />}
             onOpen={() => window.open(brand.links.docs, '_blank', 'noopener,noreferrer')}
           />
-          <DesktopIcon label="Recycle Bin" icon={<RecycleIcon />} onOpen={() => setBinOpen(true)} />
+          {APP_IDS.map(id => {
+            const { Icon } = APPS[id];
+            return (
+              <DesktopIcon
+                key={id}
+                selected={selectedIcon}
+                onSelect={setSelectedIcon}
+                label={APPS[id].title}
+                icon={<Icon size={32} />}
+                onOpen={() => openApp(id)}
+              />
+            );
+          })}
+          <DesktopIcon
+            selected={selectedIcon}
+            onSelect={setSelectedIcon}
+            label="Recycle Bin"
+            icon={<RecycleIcon />}
+            onOpen={() => setBinOpen(true)}
+          />
         </nav>
 
-        <div className="mx-auto flex min-w-0 max-w-[1200px] flex-1 flex-col gap-3">
+        <div data-desktop="1" className="mx-auto flex min-w-0 max-w-[1200px] flex-1 flex-col gap-3">
           {showWorkshop && (
             <Window
               id="win-workshop"
@@ -496,23 +635,110 @@ export function LeverageYieldPage() {
         onDeposit={() => startDeposit()}
         onShares={() => openWindow('shares')}
       />
+      {APP_IDS.filter(id => apps[id].open).map(id => {
+        const app = apps[id];
+        const { Component, Icon, title, fixedSize } = APPS[id];
+        const z = 20 + Math.max(0, stack.indexOf(id));
+        return (
+          <div key={id} className={app.minimized ? 'hidden' : undefined}>
+            <FloatingWindow
+              title={title}
+              icon={<Icon />}
+              pos={app.pos}
+              z={z}
+              active={active === id}
+              maximized={app.maximized}
+              onFocus={() => focusApp(id)}
+              onMove={pos => patchApp(id, { pos })}
+              onMinimize={() => patchApp(id, { minimized: true })}
+              onMaximize={fixedSize ? undefined : () => patchApp(id, { maximized: !app.maximized })}
+              onClose={() => closeApp(id)}
+            >
+              <Suspense
+                fallback={
+                  <div className="flex min-w-[240px] items-center gap-2 p-6">
+                    <Hourglass /> Starting {title}…
+                  </div>
+                }
+              >
+                <Component active={active === id && !app.minimized} onClose={() => closeApp(id)} />
+              </Suspense>
+            </FloatingWindow>
+          </div>
+        );
+      })}
+      {desktopMenu && (
+        <DesktopMenu
+          at={desktopMenu}
+          onClose={closeDesktopMenu}
+          items={[
+            {
+              label: 'Refresh',
+              onSelect: () => void queryClient.invalidateQueries({ queryKey: ['leverageYield'] }),
+            },
+            { label: 'Deposit…', onSelect: () => startDeposit(), separatorBefore: true },
+            { label: 'My Shares', onSelect: () => openWindow('shares') },
+            ...APP_IDS.map((id, i) => ({
+              label: APPS[id].title,
+              onSelect: () => openApp(id),
+              separatorBefore: i === 0,
+            })),
+            { label: 'Properties', onSelect: () => setAboutOpen(true), separatorBefore: true },
+          ]}
+        />
+      )}
+      <ShutdownDialog
+        open={shutdownOpen}
+        onOpenChange={setShutdownOpen}
+        onChoose={choice => {
+          if (choice === 'logoff') return void wallet.disconnect();
+          for (const id of APP_IDS) closeApp(id);
+          if (choice === 'restart') {
+            setColdBoot(false);
+            setBooting(true);
+          } else {
+            setPoweredOff(true);
+          }
+        }}
+      />
       <AboutBox open={aboutOpen} onOpenChange={setAboutOpen} />
       <RecycleBin open={binOpen} onOpenChange={setBinOpen} />
     </div>
   );
 }
 
-function DesktopIcon({ label, icon, onOpen }: { label: string; icon: React.ReactNode; onOpen: () => void }) {
+function DesktopIcon({
+  label,
+  icon,
+  onOpen,
+  selected,
+  onSelect,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onOpen: () => void;
+  selected: string | undefined;
+  onSelect: (label: string) => void;
+}) {
+  const isSelected = selected === label;
   return (
     <button
       type="button"
+      data-selected={isSelected || undefined}
       className="w2k-desktop-icon flex flex-col items-center gap-1"
       onDoubleClick={onOpen}
       onKeyDown={e => e.key === 'Enter' && onOpen()}
-      onClick={e => e.detail === 0 && onOpen()}
+      onClick={e => {
+        e.stopPropagation();
+        onSelect(label);
+        // Touch screens have no double-click: a tap opens.
+        if (e.detail === 0 || (e.nativeEvent as PointerEvent).pointerType === 'touch') onOpen();
+      }}
       title="Double-click to open"
     >
-      {icon}
+      <span className={isSelected ? 'opacity-70 [filter:sepia(1)_hue-rotate(190deg)_saturate(4)]' : undefined}>
+        {icon}
+      </span>
       <span className="leading-tight">{label}</span>
     </button>
   );

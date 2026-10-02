@@ -52,7 +52,10 @@ export function WithdrawWizard({
   const wallet0 = useEvmWallet();
   const data = useVaultData(vault, wallet0.address);
   const withShares = data.holdings.filter(h => h.shares > 0n);
-  const srcChainKey: SourceChainKey = heldOn ?? withShares[0]?.chainKey ?? ChainKeys.BASE_MAINNET;
+  // Locked at confirm: a full withdrawal empties this network's holding mid-flight, and the derived default must not
+  // then jump to another network (status tracking and the signer are keyed on it).
+  const [lockedChain, setLockedChain] = useState<SourceChainKey>();
+  const srcChainKey: SourceChainKey = lockedChain ?? heldOn ?? withShares[0]?.chainKey ?? ChainKeys.BASE_MAINNET;
   const held = data.holdings.find(h => h.chainKey === srcChainKey)?.shares;
 
   const [page, setPage] = useState<Page>('setup');
@@ -126,6 +129,10 @@ export function WithdrawWizard({
   useEffect(() => {
     if (step === 'idle' && page === 'progress') setPage('review');
   }, [step, page]);
+  // Back on the form with nothing in flight: the network is editable again.
+  useEffect(() => {
+    if (step === 'idle' && page !== 'progress') setLockedChain(undefined);
+  }, [step, page]);
 
   const setFraction = (num: bigint, den: bigint) => {
     if (!held) return;
@@ -134,6 +141,7 @@ export function WithdrawWizard({
   };
 
   const startOver = () => {
+    setLockedChain(undefined);
     flow.reset();
     setSharesText('');
     setPage('setup');
@@ -141,6 +149,7 @@ export function WithdrawWizard({
 
   const confirm = () => {
     if (!vault || !token || !address || !wallet.walletProvider || !shares || quote.minOut === undefined) return;
+    setLockedChain(srcChainKey);
     setPage('progress');
     void flow.withdraw({
       vault,

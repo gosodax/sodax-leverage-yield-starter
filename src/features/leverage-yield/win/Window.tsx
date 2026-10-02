@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode, PointerEvent as ReactPointerEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { CaptionGlyph } from './icons';
 
@@ -20,6 +20,9 @@ export function Window({
   children,
   id,
   onFocus,
+  onTitlePointerDown,
+  onTitleDoubleClick,
+  style,
 }: {
   title: ReactNode;
   icon?: ReactNode;
@@ -37,18 +40,28 @@ export function Window({
   children: ReactNode;
   id?: string;
   onFocus?: () => void;
+  /** Title-bar handlers, for dragging and double-click maximize. */
+  onTitlePointerDown?: (event: ReactPointerEvent<HTMLElement>) => void;
+  onTitleDoubleClick?: () => void;
+  style?: CSSProperties;
 }) {
   return (
     <section
       id={id}
       aria-label={typeof title === 'string' ? title : undefined}
       className={cn('w2k-window bevel-out flex min-w-0 flex-col', className)}
+      style={style}
       onPointerDown={onFocus}
     >
-      <header className="w2k-titlebar" data-inactive={active ? undefined : 'true'}>
+      <header
+        className="w2k-titlebar"
+        data-inactive={active ? undefined : 'true'}
+        onPointerDown={onTitlePointerDown}
+        onDoubleClick={onTitleDoubleClick}
+      >
         {icon}
         <h2 className="w2k-titlebar-text text-[11px]">{title}</h2>
-        <div className="flex items-center">
+        <div className="flex items-center" onPointerDown={event => event.stopPropagation()}>
           {onHelp && (
             <button type="button" className="w2k-caption-btn bevel-out mr-0.5" onClick={onHelp} aria-label="Help">
               <CaptionGlyph kind="help" />

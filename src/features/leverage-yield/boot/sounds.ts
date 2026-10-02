@@ -107,6 +107,14 @@ export function audioRunning(): boolean {
   return !muted && !!ctx && ctx.state === 'running';
 }
 
+/**
+ * The shared audio graph for apps (games) that synthesise their own sounds: the running context and the master
+ * gain to connect to. Undefined while muted, locked or unsupported, so callers just skip the sound.
+ */
+export function getAudio(): { ac: AudioContext; out: GainNode } | undefined {
+  return ready();
+}
+
 function ready(): { ac: AudioContext; out: GainNode } | undefined {
   if (muted || !ctx || !master || ctx.state !== 'running') return undefined;
   return { ac: ctx, out: master };

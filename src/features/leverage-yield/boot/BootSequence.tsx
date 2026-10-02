@@ -39,10 +39,16 @@ function prefersReducedMotion(): boolean {
  * Cold-boot experience: power button → BIOS POST → splash, with a synthesised boot soundscape.
  * Esc or "Skip" ends it at any point.
  */
-export function BootSequence({ onDone }: { onDone: () => void }) {
+export function BootSequence({
+  onDone,
+  cold = false,
+}: {
+  onDone: () => void /** Always show the power button. */;
+  cold?: boolean;
+}) {
   // Already unlocked (e.g. Start → Restart): go straight to POST with sound. Otherwise ask for the power button,
   // which is the click every browser (Safari included) needs before it will play audio.
-  const [phase, setPhase] = useState<Phase>(() => (audioRunning() ? 'post' : 'power'));
+  const [phase, setPhase] = useState<Phase>(() => (!cold && audioRunning() ? 'post' : 'power'));
   const soundRef = useRef<{ stop(): void } | null>(null);
   const doneRef = useRef(false);
 
@@ -73,8 +79,8 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
 
   // Restart path: audio already running, start the soundscape with the POST.
   useEffect(() => {
-    if (audioRunning()) startSound();
-  }, [startSound]);
+    if (!cold && audioRunning()) startSound();
+  }, [startSound, cold]);
 
   const powerOn = useCallback(() => {
     void unlockAudio(true).then(startSound);
