@@ -285,9 +285,9 @@ export function LeverageYieldPage() {
       {booting && <BootSequence onDone={finishBoot} />}
       <Wallpaper />
 
-      <div className="relative z-10 mx-auto flex max-w-[1280px] gap-3 p-2 sm:p-3">
+      <div className="relative z-10 flex gap-3 p-2 sm:p-3">
         {/* desktop icons */}
-        <nav aria-label="Desktop" className="hidden w-[80px] shrink-0 flex-col gap-4 pt-1 lg:flex">
+        <nav aria-label="Desktop" className="hidden w-[80px] shrink-0 flex-col gap-4 pt-1 lg:-ml-1 lg:flex">
           <DesktopIcon label="Vault Dispenser" icon={<BottleIcon size={32} />} onOpen={() => openWindow('dispenser')} />
           <DesktopIcon label="My Shares" icon={<CrateIcon size={32} />} onOpen={() => openWindow('shares')} />
           <DesktopIcon label="Deposit Wizard" icon={<WizardIcon size={32} />} onOpen={() => startDeposit()} />
@@ -300,7 +300,7 @@ export function LeverageYieldPage() {
           <DesktopIcon label="Recycle Bin" icon={<RecycleIcon />} onOpen={() => setBinOpen(true)} />
         </nav>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="mx-auto flex min-w-0 max-w-[1200px] flex-1 flex-col gap-3">
           {showWorkshop && (
             <Window
               id="win-workshop"
