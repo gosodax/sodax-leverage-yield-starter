@@ -1,56 +1,89 @@
 /*
- * Brand theme: the ONLY place brand colours, fonts and radii live.
+ * Brand theme: the ONLY place brand colours, fonts, radii and shadows live.
  *
- * Components use semantic Tailwind classes (bg-primary, text-muted-foreground, rounded-lg, font-display…)
+ * Components use semantic Tailwind classes (bg-primary, text-muted-foreground, rounded-lg, shadow-card…)
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Direction: Runway (docs/design/runway-style.md). Kraft paper ledger under an amber desk lamp: cream canvas,
+ * white paper cards with linen borders, espresso ink, and amber as the only filled button colour. Light theme only.
+ * No blue, green, red or purple: errors use terracotta, success uses amber and honey.
  */
 :root {
+  /* Palette (names from the design spec) */
+  --cream-canvas: #f8f7f5;
+  --pure-paper: #ffffff;
+  --linen: #e3dfd5;
+  --stone-mist: #d5d2cd;
+  --warm-ash: #aca89f;
+  --driftwood: #8f897e;
+  --bark: #61594a;
+  --espresso: #261b07;
+  --amber: #f9a600;
+  --burnished-gold: #e89b01;
+  --terracotta: #f0624f;
+  --wisteria: #d5befa;
+  --honey-wash: #f8da9d;
+
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
-  --card: #ffffff;
-  --card-foreground: #483434;
-  --popover: #ffffff;
-  --popover-foreground: #483434;
+  --background: var(--cream-canvas);
+  --foreground: #261b07; /* espresso; hex so the thinking orb can read it as its tint */
+  --card: var(--pure-paper);
+  --card-foreground: var(--espresso);
+  --popover: var(--pure-paper);
+  --popover-foreground: var(--espresso);
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
-  --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --primary: #f9a600; /* amber: the only filled button colour, selected states */
+  --primary-hover: var(--burnished-gold);
+  --primary-foreground: var(--espresso);
+  --secondary: var(--cream-canvas);
+  --secondary-foreground: var(--espresso);
+  --accent: var(--honey-wash); /* warm highlight behind text, badges */
+  --accent-foreground: var(--espresso);
+  --link: var(--burnished-gold); /* link underlines and light emphasis */
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: var(--linen);
+  --muted-foreground: var(--bark);
+  --subtle-foreground: var(--driftwood);
+  --icon-muted: var(--warm-ash);
+  --border: var(--linen);
+  --border-strong: var(--stone-mist);
+  --input: var(--linen);
+  --ring: var(--burnished-gold);
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
-  --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  /* Hero (no coloured bands: paper with ink) */
+  --hero: var(--cream-canvas);
+  --hero-foreground: var(--espresso);
+  --hero-muted: var(--bark);
+  --hero-accent: var(--honey-wash);
 
   /* Status */
-  --destructive: #ce4446;
-  --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive: var(--terracotta);
+  --destructive-foreground: var(--espresso);
+  --destructive-muted: #fdebe8; /* terracotta wash */
+  --success: var(--burnished-gold);
+  --success-muted: var(--honey-wash);
+  --notice: var(--pure-paper);
 
-  /* Shape and type */
-  --radius: 16px;
+  /* Washes behind vault icon tiles */
+  --wash-honey: var(--honey-wash);
+  --wash-linen: var(--linen);
+  --wash-terracotta: #fdebe8;
+  --wash-wisteria: var(--wisteria);
+
+  /* Shape, elevation and type */
+  --radius: 8px;
+  --radius-badge: 4px;
+  --shadow-card: 0 4px 8px rgba(38, 27, 7, 0.06);
+  --shadow-cta:
+    inset 0 2px 4px rgba(255, 255, 255, 0.56), 0 4px 8px rgba(38, 27, 7, 0.06), 0 1px 2px rgba(38, 27, 7, 0.36);
+  --shadow-pop: 0 8px 24px rgba(38, 27, 7, 0.1), 0 1px 2px rgba(38, 27, 7, 0.12);
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --font-display: var(--font-sans);
+  --font-features: "ss01";
+  --weight-body: 400;
+  --weight-emphasis: 492;
+  --weight-heading: 584;
 }

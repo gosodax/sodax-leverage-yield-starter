@@ -2,13 +2,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
-const badgeVariants = cva('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium', {
+const badgeVariants = cva('inline-flex items-center gap-1 rounded-sm px-2 py-1 text-xs font-medium', {
   variants: {
     variant: {
-      default: 'bg-secondary text-secondary-foreground',
+      default: 'bg-accent text-accent-foreground',
       muted: 'bg-muted text-muted-foreground',
-      success: 'bg-success-muted text-success',
-      destructive: 'bg-destructive-muted text-destructive',
+      success: 'bg-success-muted text-foreground',
+      destructive: 'bg-destructive-muted text-foreground',
       outline: 'border text-muted-foreground',
     },
   },

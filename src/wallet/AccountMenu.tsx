@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronDownIcon, CopyIcon, ExternalLinkIcon, LogOutIcon } from 'lucide-react';
+import { ArrowSquareOutIcon, CaretDownIcon, CheckIcon, CopyIcon, SignOutIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +37,7 @@ export function AccountMenu() {
             <span className="size-6 rounded-full bg-muted" />
           )}
           <span className="font-mono">{shortenAddress(address)}</span>
-          <ChevronDownIcon className="text-muted-foreground" />
+          <CaretDownIcon weight="duotone" className="text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -50,20 +50,20 @@ export function AccountMenu() {
             void copy();
           }}
         >
-          {copied ? <CheckIcon /> : <CopyIcon />}
+          {copied ? <CheckIcon weight="duotone" /> : <CopyIcon weight="duotone" />}
           {copied ? 'Copied' : 'Copy address'}
         </DropdownMenuItem>
         {explorer && (
           <DropdownMenuItem asChild>
             <a href={explorer} target="_blank" rel="noopener noreferrer">
-              <ExternalLinkIcon />
+              <ArrowSquareOutIcon weight="duotone" />
               View on explorer
             </a>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void disconnect()}>
-          <LogOutIcon />
+          <SignOutIcon weight="duotone" />
           Disconnect
         </DropdownMenuItem>
       </DropdownMenuContent>

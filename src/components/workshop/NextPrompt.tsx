@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon, TerminalIcon } from 'lucide-react';
+import { CheckIcon, CopyIcon, TerminalWindowIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,7 @@ function WorkshopLink({ section }: { section?: string }) {
       href={section ? `${WORKSHOP_URL}#${section}` : WORKSHOP_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-medium text-primary hover:underline"
+      className="font-medium text-foreground underline decoration-link decoration-2 underline-offset-4 hover:decoration-primary"
     >
       <code className={code}>docs/WORKSHOP.md</code>
     </a>
@@ -50,11 +50,11 @@ export function NextPrompt({ next }: { next: Milestone | 'done' }) {
   return (
     <Card className="border-dashed">
       <CardHeader className="flex-row items-start gap-4">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-          <TerminalIcon className="size-5" />
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+          <TerminalWindowIcon weight="duotone" className="size-5" />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{eyebrow}</p>
+          <p className="text-xs font-medium uppercase text-subtle-foreground">{eyebrow}</p>
           <CardTitle>{title}</CardTitle>
           <CardDescription>
             {showOneShot ? (
@@ -65,7 +65,7 @@ export function NextPrompt({ next }: { next: Milestone | 'done' }) {
                 toggle), or rebrand it: fill in the two placeholders, then paste.
               </>
             ) : (
-              'Paste this into your coding agent. Only M1 links the SODAX guide, so keep M2–M4 in the same session (or give a new one the guide link again).'
+              'Paste this into your coding agent. Only M1 links the SODAX guide, so keep M2 to M4 in the same session (or give a new one the guide link again).'
             )}
           </CardDescription>
         </div>
@@ -100,7 +100,7 @@ const MODES: { value: Mode; label: string }[] = [
 
 function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (mode: Mode) => void }) {
   return (
-    <fieldset className="flex w-fit gap-1 rounded-full border bg-muted p-1">
+    <fieldset className="flex w-fit gap-1 rounded-lg border bg-secondary p-1">
       <legend className="sr-only">How to build it</legend>
       {MODES.map(option => (
         <button
@@ -109,7 +109,7 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (mode: Mode) => 
           aria-pressed={mode === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            'rounded-full px-3 py-1 text-sm font-medium transition-colors',
+            'rounded-md px-3 py-1 text-sm font-medium transition-colors',
             mode === option.value
               ? 'bg-primary text-primary-foreground'
               : 'text-muted-foreground hover:text-foreground',
@@ -132,14 +132,14 @@ function PromptBox({ prompt }: { prompt: string }) {
 
   return (
     <div className="relative rounded-md border bg-muted/50 p-4 sm:pr-28">
-      <p className="font-mono text-xs leading-relaxed">{prompt}</p>
+      <p className="font-mono text-xs leading-normal">{prompt}</p>
       <Button
         variant="outline"
         size="sm"
         className="mt-3 sm:absolute sm:top-3 sm:right-3 sm:mt-0"
         onClick={() => void copy()}
       >
-        {copied ? <CheckIcon /> : <CopyIcon />}
+        {copied ? <CheckIcon weight="duotone" /> : <CopyIcon weight="duotone" />}
         {copied ? 'Copied' : 'Copy'}
       </Button>
     </div>

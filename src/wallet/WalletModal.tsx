@@ -1,9 +1,10 @@
+import { CheckCircleIcon } from '@phosphor-icons/react';
 import { sortConnectors, useWalletModal, useXAccount, useXConnectors, type XConnector } from '@sodax/wallet-sdk-react';
-import { CheckCircle2Icon, Loader2Icon } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ThinkingOrb } from '@/components/ui/thinking-orb';
 import { shortenAddress } from '@/lib/format';
 
 /**
@@ -39,7 +40,7 @@ export function WalletModal() {
         <DialogHeader>
           <DialogTitle>{state.kind === 'success' ? 'Connected' : 'Connect a wallet'}</DialogTitle>
           <DialogDescription>
-            EVM wallets only. Use a wallet you funded for this workshop — transactions use real mainnet funds.
+            EVM wallets only. Use a wallet you funded for this workshop, because transactions use real mainnet funds.
           </DialogDescription>
         </DialogHeader>
 
@@ -47,7 +48,7 @@ export function WalletModal() {
 
         {state.kind === 'connecting' && (
           <div className="flex flex-col items-center gap-3 py-6 text-center">
-            <Loader2Icon className="size-8 animate-spin text-primary" />
+            <ThinkingOrb state="connecting" size={32} decorative />
             <p className="text-sm">
               Approve the connection in <span className="font-semibold">{state.connector.name}</span>.
             </p>
@@ -76,7 +77,7 @@ export function WalletModal() {
 
         {state.kind === 'success' && (
           <div className="flex flex-col items-center gap-2 py-4 text-center">
-            <CheckCircle2Icon className="size-8 text-success" />
+            <CheckCircleIcon weight="duotone" className="size-8 text-foreground" />
             <p className="font-mono text-sm">{shortenAddress(state.account.address)}</p>
           </div>
         )}
@@ -120,7 +121,9 @@ function WalletList() {
                 className="flex items-center justify-between rounded-md border border-dashed px-4 py-3 hover:bg-secondary"
               >
                 <span className="font-medium">{wallet.name}</span>
-                <span className="text-xs font-medium text-primary">Install</span>
+                <span className="text-xs font-medium underline decoration-link decoration-2 underline-offset-4">
+                  Install
+                </span>
               </a>
             </li>
           ))}
@@ -133,11 +136,13 @@ function WalletList() {
               <button
                 type="button"
                 onClick={() => void selectWallet(connector)}
-                className="flex w-full items-center gap-3 rounded-md border bg-card px-4 py-3 text-left transition-colors hover:bg-secondary"
+                className="flex w-full items-center gap-3 rounded-md border bg-card px-4 py-3 text-left shadow-card transition-colors hover:border-border-strong hover:bg-secondary"
               >
                 <ConnectorIcon connector={connector} />
                 <span className="flex-1 font-medium">{connector.name}</span>
-                <span className="text-xs text-success">Detected</span>
+                <span className="rounded-sm bg-accent px-2 py-1 text-xs font-medium text-accent-foreground">
+                  Detected
+                </span>
               </button>
             ) : (
               <div className="flex items-center gap-3 rounded-md border border-dashed px-4 py-3">
@@ -148,7 +153,7 @@ function WalletList() {
                     href={connector.installUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium text-primary hover:underline"
+                    className="text-xs font-medium text-foreground underline decoration-link decoration-2 underline-offset-4 hover:decoration-primary"
                   >
                     Install
                   </a>

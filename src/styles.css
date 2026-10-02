@@ -1,8 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
-@import "@fontsource/inria-serif/400.css";
-@import "@fontsource/inria-serif/700.css";
-@import "@fontsource/shrikhand/400.css";
 @import "./brand/theme.css";
 
 /* Map brand variables (src/brand/theme.css) to Tailwind utilities. Use these, never raw hex values. */
@@ -36,15 +33,72 @@
   --color-success: var(--success);
   --color-success-muted: var(--success-muted);
   --color-notice: var(--notice);
+  --color-link: var(--link);
+  --color-border-strong: var(--border-strong);
+  --color-icon-muted: var(--icon-muted);
+  --color-wash-honey: var(--wash-honey);
+  --color-wash-linen: var(--wash-linen);
+  --color-wash-terracotta: var(--wash-terracotta);
+  --color-wash-wisteria: var(--wash-wisteria);
 
-  --radius-sm: calc(var(--radius) - 8px);
-  --radius-md: calc(var(--radius) - 4px);
+  /* 8px for cards, buttons, inputs and menus; 4px for badges. */
+  --radius-sm: var(--radius-badge);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 8px);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+
+  /* Warm shadows only. */
+  --shadow-sm: var(--shadow-card);
+  --shadow-md: var(--shadow-card);
+  --shadow-lg: var(--shadow-pop);
+  --shadow-xl: var(--shadow-pop);
+  --shadow-card: var(--shadow-card);
+  --shadow-cta: var(--shadow-cta);
 
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
-  --font-accent: var(--font-accent);
+
+  /* Three weights only: 400 body, 492 emphasis, 584 headings. Never 700+. */
+  --font-weight-light: var(--weight-body);
+  --font-weight-normal: var(--weight-body);
+  --font-weight-medium: var(--weight-emphasis);
+  --font-weight-semibold: var(--weight-heading);
+  --font-weight-bold: var(--weight-heading);
+
+  /* Type scale: line height at most 1.25, tight tracking. */
+  --text-xs: 12px;
+  --text-xs--line-height: 1.25;
+  --text-xs--letter-spacing: 0.6px;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.25;
+  --text-sm--letter-spacing: -0.14px;
+  --text-base: 16px;
+  --text-base--line-height: 1.25;
+  --text-base--letter-spacing: -0.16px;
+  --text-lg: 20px;
+  --text-lg--line-height: 1.25;
+  --text-lg--letter-spacing: -0.22px;
+  --text-xl: 20px;
+  --text-xl--line-height: 1.25;
+  --text-xl--letter-spacing: -0.22px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 1.13;
+  --text-2xl--letter-spacing: -0.31px;
+  --text-3xl: 24px;
+  --text-3xl--line-height: 1.13;
+  --text-3xl--letter-spacing: -0.31px;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 1.13;
+  --text-4xl--letter-spacing: -0.61px;
+  --text-5xl: 56px;
+  --text-5xl--line-height: 1.13;
+  --text-5xl--letter-spacing: -1.12px;
+  --text-6xl: 72px;
+  --text-6xl--line-height: 1;
+  --text-6xl--letter-spacing: -1.58px;
+
+  --container-page: 1200px;
 }
 
 @layer base {
@@ -58,9 +112,92 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-feature-settings: var(--font-features);
+    font-weight: var(--weight-body);
+    line-height: 1.25;
+    letter-spacing: -0.16px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: var(--weight-heading);
+  }
+  ::placeholder {
+    color: var(--color-subtle-foreground);
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+/*
+ * Enter and exit motion for Radix overlays (dialogs, selects, menus), driven by their data-state attribute.
+ * Fade plus a small scale (about 4px on a dialog), ease out, under 250ms. Off for prefers-reduced-motion.
+ */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes overlay-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+@keyframes drop-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .motion-overlay[data-state="open"] {
+    animation: overlay-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-overlay[data-state="closed"] {
+    animation: overlay-out 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-pop[data-state="open"] {
+    animation: pop-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-pop[data-state="closed"] {
+    animation: pop-out 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-drop[data-state="open"] {
+    transform-origin: var(--radix-select-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin));
+    animation: drop-in 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .motion-drop[data-state="closed"] {
+    animation: drop-out 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* Parody news toast: the 10s countdown bar (paused on hover via animation-play-state). */
+@keyframes parody-news-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
   }
 }

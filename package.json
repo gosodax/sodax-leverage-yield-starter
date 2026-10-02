@@ -21,8 +21,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.2.8",
-    "@fontsource/inria-serif": "5.2.8",
-    "@fontsource/shrikhand": "5.2.8",
+    "@phosphor-icons/react": "2.1.10",
     "@radix-ui/react-dialog": "1.1.15",
     "@radix-ui/react-dropdown-menu": "2.1.16",
     "@radix-ui/react-select": "2.2.6",
@@ -36,11 +35,12 @@
     "buffer": "6.0.3",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "lucide-react": "0.456.0",
+    "motion": "13.5.0",
     "react": "19.1.4",
     "react-dom": "19.1.4",
     "sonner": "2.0.7",
     "tailwind-merge": "3.3.1",
+    "thinking-orbs": "0.3.2",
     "viem": "2.29.2",
     "wagmi": "2.16.9"
   },

@@ -17,7 +17,7 @@ const WAD = 10n ** 18n;
  * stay readable: 0.000375 shares → '0.000375', not '0.0003'.
  */
 export function formatTokenAmount(amount: bigint | undefined, decimals: number, maxFractionDigits = 4): string {
-  if (amount === undefined) return '–';
+  if (amount === undefined) return '-';
   const [whole, fraction = ''] = formatUnits(amount, decimals).split('.');
   const leadingZeros = whole === '0' ? (fraction.match(/^0*/)?.[0].length ?? 0) : 0;
   const trimmed = fraction.slice(0, leadingZeros + maxFractionDigits).replace(/0+$/, '');
@@ -46,7 +46,7 @@ export function parseTokenAmount(value: string, decimals: number): bigint | unde
  * SODAX apps do: 6.1666% → '6.17%'. Handles negative rates.
  */
 export function formatRayPercent(ray: bigint | undefined, fractionDigits = 2): string {
-  if (ray === undefined) return '–';
+  if (ray === undefined) return '-';
   const scale = 10n ** BigInt(fractionDigits);
   const negative = ray < 0n;
   const abs = ((negative ? -ray : ray) * scale + RAY_PER_PERCENT / 2n) / RAY_PER_PERCENT;
@@ -57,13 +57,13 @@ export function formatRayPercent(ray: bigint | undefined, fractionDigits = 2): s
 
 /** WAD multiplier → string, e.g. 4.56e18 → '4.56'. */
 export function formatWad(wad: bigint | undefined, fractionDigits = 2): string {
-  if (wad === undefined) return '–';
+  if (wad === undefined) return '-';
   return Number(formatUnits(wad, 18)).toFixed(fractionDigits);
 }
 
 /** Basis points → percent string, e.g. 8200 → '82%', 7950 → '79.5%', 50 → '0.5%'. */
 export function formatBps(bps: bigint | number | undefined, maxFractionDigits = 2): string {
-  if (bps === undefined) return '–';
+  if (bps === undefined) return '-';
   return `${Number((Number(bps) / 100).toFixed(maxFractionDigits))}%`;
 }
 

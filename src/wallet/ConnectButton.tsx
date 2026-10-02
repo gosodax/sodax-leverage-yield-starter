@@ -1,4 +1,4 @@
-import { WalletIcon } from 'lucide-react';
+import { WalletIcon } from '@phosphor-icons/react';
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { AccountMenu } from './AccountMenu';
 import { useEvmWallet } from './useEvmWallet';
@@ -9,7 +9,7 @@ export function ConnectButton(props: Omit<ButtonProps, 'onClick'>) {
   if (isConnected) return <AccountMenu />;
   return (
     <Button onClick={connect} {...props}>
-      <WalletIcon />
+      <WalletIcon weight="duotone" />
       Connect wallet
     </Button>
   );

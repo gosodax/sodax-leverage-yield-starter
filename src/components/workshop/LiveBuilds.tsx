@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from 'lucide-react';
+import { ArrowSquareOutIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { LIVE_BUILDS } from './builds';
 
@@ -21,14 +21,14 @@ export function LiveBuilds({ from }: { from: number }) {
                 rel="noopener noreferrer"
                 title={`Branch ${build.branch}`}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors',
+                  'inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-sm font-medium transition-colors',
                   final
                     ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
                     : 'bg-card text-foreground hover:bg-muted',
                 )}
               >
                 {build.label}
-                <ExternalLinkIcon className="size-3.5" />
+                <ArrowSquareOutIcon weight="duotone" className="size-3.5" />
               </a>
             </li>
           );
