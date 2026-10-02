@@ -10,7 +10,8 @@ export const brand = {
   productLabel: 'Vaults',
   logo: {
     /** Logo for light surfaces (header). */
-    onLight: 'brand/hana-logo-on-light.svg',
+    /** The theme is dark everywhere, so the header uses the light-on-dark logo too. */
+    onLight: 'brand/hana-logo-on-dark.svg',
     /** Logo for dark / primary surfaces (hero, footer). */
     onDark: 'brand/hana-logo-on-dark.svg',
     alt: 'Hana',
