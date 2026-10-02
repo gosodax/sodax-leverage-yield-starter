@@ -5,52 +5,104 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * StableCorp brand tokens: Swiss editorial. Warm cream surfaces, near-black ink, Bluebonnet blue
+ * (#2b3bee) as the single brand colour. Sharp square corners everywhere; buttons and badges stay
+ * pills (their rounded-full is independent of --radius). Status colours are darkened slightly from
+ * the StableCorp master palette so small text on tinted callouts keeps >= 4.5:1 contrast.
  */
+
+/* Self-hosted brand fonts, served from public/brand/fonts/ (Fontshare ITF-FFL + OFL licensed).
+   Absolute /brand/... URLs resolve against the site root — fine for root deploys; a VITE_BASE_PATH
+   sub-path deploy would need the prefix added here too. */
+@font-face {
+  font-family: "Satoshi";
+  src: url("/brand/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/brand/fonts/CabinetGrotesk-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/brand/fonts/CabinetGrotesk-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/brand/fonts/CabinetGrotesk-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/brand/fonts/CabinetGrotesk-800.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/brand/fonts/JetBrainsMono-Variable.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
+  --background: #f4f4f2; /* warm cream */
+  --foreground: #111111; /* ink */
   --card: #ffffff;
-  --card-foreground: #483434;
+  --card-foreground: #111111;
   --popover: #ffffff;
-  --popover-foreground: #483434;
+  --popover-foreground: #111111;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #2b3bee; /* bluebonnet */
+  --primary-hover: #202fd6; /* bluebonnet, pressed */
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #ececea; /* warm off-white chips / hovers */
+  --secondary-foreground: #2b3bee;
+  --accent: #ffffff; /* accent buttons on the hero band: white pill, blue label */
+  --accent-foreground: #2b3bee;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #eaeae8; /* warm light gray */
+  --muted-foreground: #5c5c5c;
+  --subtle-foreground: #6b6b6b;
+  --border: #e4e4e1;
+  --input: #d6d6d2;
+  --ring: #2b3bee;
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
-  --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  /* Hero band: ink surface, cream text, the accent word in lifted bluebonnet */
+  --hero: #111111;
+  --hero-foreground: #f4f4f2;
+  --hero-muted: #a3a3a3;
+  --hero-accent: #6d79ff;
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #c81e1e;
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fbefef;
+  --success: #15803d;
+  --success-muted: #eef7f1;
+  --notice: #ebedfc; /* pale bluebonnet tint: callouts with a primary left border */
 
-  /* Shape and type */
-  --radius: 16px;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  /* Shape and type. Swiss = sharp corners: -8px so even rounded-xl (radius + 8px) resolves to 0,
+     and every negative result clamps to 0. Buttons/badges are pills via rounded-full, unaffected. */
+  --radius: -8px;
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cabinet Grotesk", "Helvetica Neue", ui-sans-serif, sans-serif;
+  --font-accent: "Cabinet Grotesk", "Helvetica Neue", ui-sans-serif, sans-serif;
+  /* Tailwind's font-mono utility reads this variable; declared after the Tailwind layer, so it wins. */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
