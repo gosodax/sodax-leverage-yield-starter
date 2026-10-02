@@ -11,14 +11,14 @@ export function SelectTrigger({ className, children, ...props }: ComponentProps<
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        'flex h-11 w-full items-center justify-between gap-2 rounded-md border border-input bg-card px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:flex [&>span]:items-center [&>span]:gap-2',
+        'win-sunken flex h-11 w-full items-center justify-between gap-2 rounded-none bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:flex [&>span]:items-center [&>span]:gap-2',
         className,
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 text-muted-foreground" />
+        <ChevronDownIcon className="size-4 text-primary" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -36,7 +36,7 @@ export function SelectContent({
         position={position}
         sideOffset={4}
         className={cn(
-          'z-50 max-h-80 min-w-[var(--radix-select-trigger-width)] overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-lg',
+          'win-window z-50 max-h-80 min-w-[var(--radix-select-trigger-width)] overflow-y-auto bg-popover p-1 text-popover-foreground',
           className,
         )}
         {...props}
@@ -51,7 +51,7 @@ export function SelectItem({ className, children, ...props }: ComponentProps<typ
   return (
     <SelectPrimitive.Item
       className={cn(
-        'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-2 pl-3 pr-8 text-sm outline-none focus:bg-secondary data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex cursor-pointer select-none items-center gap-2 py-2 pl-3 pr-8 text-sm outline-none focus:bg-primary focus:text-primary-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className,
       )}
       {...props}
