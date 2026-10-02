@@ -30,6 +30,7 @@ import { chainName, explorerTxUrl } from '@/lib/chains';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/format';
 import { useEvmWallet } from '@/wallet';
 import { useDepositQuote, useWithdrawQuote } from '../hooks/useVaultQuotes';
+import { canProceedWithWalletBalance } from '../lib/balance';
 
 export type VaultTab = 'deposit' | 'withdraw';
 
@@ -97,12 +98,13 @@ export function VaultDialog({
   const nativeToken = sourceTokens.find(item => item.address === '0x0000000000000000000000000000000000000000');
   const nativeBalance = nativeToken ? balances.data?.[nativeToken.address] : undefined;
   const isNativeInput = token?.address === '0x0000000000000000000000000000000000000000';
-  const insufficientInputBalance =
-    tab === 'deposit' && !!parsed && (tokenBalance === undefined || tokenBalance < parsed);
+  const insufficientInputBalance = tab === 'deposit' && !!parsed && !canProceedWithWalletBalance(tokenBalance, parsed);
   const insufficientGasReserve =
     !!wallet.address &&
-    (nativeBalance === undefined ||
-      nativeBalance < NATIVE_GAS_RESERVE[signingChain] + (tab === 'deposit' && isNativeInput ? (parsed ?? 0n) : 0n));
+    !canProceedWithWalletBalance(
+      nativeBalance,
+      NATIVE_GAS_RESERVE[signingChain] + (tab === 'deposit' && isNativeInput ? (parsed ?? 0n) : 0n),
+    );
   const ready =
     !!wallet.address &&
     !!wallet.walletProvider &&
@@ -112,8 +114,6 @@ export function VaultDialog({
     !isOverShareBalance &&
     !insufficientInputBalance &&
     !insufficientGasReserve &&
-    !balances.isLoading &&
-    !balances.isError &&
     !isPending;
 
   const updateChain = (value: string) => {
@@ -267,8 +267,11 @@ export function VaultDialog({
             </span>
           )}
         </label>
-        {wallet.address && balances.isLoading && (
-          <p className="text-sm text-muted-foreground">Checking wallet balance…</p>
+        {wallet.address && (balances.isLoading || balances.isError) && (
+          <p className="text-sm text-muted-foreground">
+            Wallet balance could not be verified right now. Your wallet will confirm the actual amount and gas before
+            signing.
+          </p>
         )}
         {insufficientInputBalance && (
           <p role="alert" className="text-sm text-destructive">
