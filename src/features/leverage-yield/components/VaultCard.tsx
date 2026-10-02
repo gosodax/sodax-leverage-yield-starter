@@ -7,6 +7,7 @@ import {
 import type { LeverageYieldVault } from '@sodax/types';
 import { InfoIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useDodge } from '@/components/desktop/useDodge';
 import { Window } from '@/components/desktop/Window';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -39,6 +40,8 @@ export function VaultCard({
   const position = useLeverageYieldPosition(params);
   const sharePrice = useLeverageYieldPreviewRedeem({ params: { vault: vault.vault, shares: ONE_SHARE } });
   const shares = useVaultShares(vault, address);
+  const windowId = `vault:${vault.name}`;
+  const dodge = useDodge(windowId);
 
   const netApr = apr.data?.effectiveNetAprRay;
   const leverage = apr.data ? apr.data.leverageMultiplierWad + WAD : undefined;
@@ -47,7 +50,7 @@ export function VaultCard({
 
   return (
     <Window
-      id={`vault:${vault.name}`}
+      id={windowId}
       title={`${vault.name.toLowerCase()}.exe`}
       className={cn(selected && 'ring-2 ring-primary ring-offset-4 ring-offset-background')}
       bodyClassName="gap-5 p-5"
@@ -120,7 +123,12 @@ export function VaultCard({
 
       <div className="mt-auto grid grid-cols-2 gap-2">
         <Button onClick={onDeposit}>Deposit</Button>
-        <Button variant="outline" onClick={onWithdraw} disabled={!address || shares.total === 0n}>
+        <Button
+          variant="outline"
+          onClick={onWithdraw}
+          onPointerEnter={dodge.onPointerEnter}
+          disabled={!address || shares.total === 0n}
+        >
           Withdraw
         </Button>
       </div>

@@ -1,6 +1,7 @@
 import { useLeverageYieldWithdraw } from '@sodax/dapp-kit';
 import { ChainKeys, type LeverageYieldVault, type SpokeChainKey } from '@sodax/types';
 import { useMemo, useState } from 'react';
+import { useDodge } from '@/components/desktop/useDodge';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { Input } from '@/components/ui/input';
@@ -33,11 +34,15 @@ export function WithdrawForm({
   vaults,
   vault,
   onVaultChange,
+  windowId,
 }: {
   vaults: readonly LeverageYieldVault[];
   vault: LeverageYieldVault;
   onVaultChange: (name: string) => void;
+  /** The window this form lives in, which dodges the cursor a few times before letting the user withdraw. */
+  windowId: string;
 }) {
+  const dodge = useDodge(windowId);
   const connected = useEvmWallet();
   const shares = useVaultShares(vault, connected.address);
   const positions = shares.holdings.filter(h => h.shares > 0n && isSourceChain(h.chainKey));
@@ -228,7 +233,12 @@ export function WithdrawForm({
 
       <RiskNotice checked={acknowledged} onChange={setAcknowledged} />
 
-      <Button size="lg" onClick={action.onClick} disabled={action.disabled}>
+      <Button
+        size="lg"
+        onClick={action.onClick}
+        onPointerEnter={action.disabled ? undefined : dodge.onPointerEnter}
+        disabled={action.disabled}
+      >
         {action.label}
       </Button>
     </div>

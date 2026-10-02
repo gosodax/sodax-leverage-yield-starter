@@ -91,7 +91,7 @@ export function LeverageYieldPage() {
                 {tab === 'deposit' ? (
                   <DepositForm vaults={vaults} vault={vault} onVaultChange={setVaultName} />
                 ) : (
-                  <WithdrawForm vaults={vaults} vault={vault} onVaultChange={setVaultName} />
+                  <WithdrawForm vaults={vaults} vault={vault} onVaultChange={setVaultName} windowId={PANEL_ID} />
                 )}
               </CardContent>
             </Window>

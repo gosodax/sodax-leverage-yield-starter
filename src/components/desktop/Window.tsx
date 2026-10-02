@@ -1,4 +1,4 @@
-import { type PointerEvent, type ReactNode, useEffect, useRef } from 'react';
+import { type PointerEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useWindowManager } from './WindowManager';
 
@@ -27,6 +27,8 @@ export function Window({
   const { register } = wm;
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<{ pointerX: number; pointerY: number; x: number; y: number; rect: DOMRect } | null>(null);
+  // Animate programmatic moves (see useDodge) but not drags, which must track the pointer exactly.
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => register(id, title), [register, id, title]);
 
@@ -44,6 +46,7 @@ export function Window({
     if (!rect) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     drag.current = { pointerX: e.clientX, pointerY: e.clientY, x: state.offset.x, y: state.offset.y, rect };
+    setDragging(true);
   }
 
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
@@ -60,12 +63,14 @@ export function Window({
 
   function onPointerUp() {
     drag.current = null;
+    setDragging(false);
   }
 
   return (
     <section
       ref={ref}
       aria-label={title}
+      data-window-id={id}
       onPointerDownCapture={() => wm.focus(id)}
       style={
         state.maximized
@@ -74,6 +79,7 @@ export function Window({
       }
       className={cn(
         'win-window relative flex flex-col bg-card text-card-foreground',
+        !dragging && 'transition-transform duration-200 ease-out motion-reduce:transition-none',
         // Minimized and closed windows keep their spot, like icons left on a desktop, so nothing else jumps.
         hidden && 'invisible',
         state.maximized && 'fixed inset-x-2 top-[4.5rem] bottom-14 overflow-auto',
