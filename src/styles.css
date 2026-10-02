@@ -1,8 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
-@import "@fontsource/inria-serif/400.css";
-@import "@fontsource/inria-serif/700.css";
-@import "@fontsource/shrikhand/400.css";
 @import "./brand/theme.css";
 
 /* Map brand variables (src/brand/theme.css) to Tailwind utilities. Use these, never raw hex values. */

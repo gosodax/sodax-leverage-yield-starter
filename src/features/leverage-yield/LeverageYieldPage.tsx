@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { NextPrompt } from '@/components/workshop/NextPrompt';
 import { DEFAULT_SOURCE_CHAIN, type SourceChainKey } from '@/config/workshop';
 import { useEvmWallet } from '@/wallet';
 import { VaultCard } from './components/VaultCard';
@@ -13,12 +12,12 @@ export function LeverageYieldPage() {
   const vault = vaults.find(item => item.name === selected?.name);
   return (
     <div className="flex flex-col gap-8">
-      <NextPrompt next="done" />
       <section className="flex flex-col gap-2">
-        <h2 className="font-display text-3xl font-bold">Choose a vault</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Yield strategies</p>
+        <h2 className="font-display text-3xl font-semibold tracking-tight">Choose a vault</h2>
         <p className="max-w-2xl text-muted-foreground">
-          Deposit a supported token from Base, Arbitrum, or Sonic. Your wallet signs an intent; independent solvers
-          deliver pooled vault shares to your SODAX hub wallet.
+          Deposit from Base, Arbitrum, or Sonic with a supported asset. Balanced handles the route and delivers your
+          vault shares when the order settles.
         </p>
       </section>
       <div className="grid gap-5 md:grid-cols-2">
@@ -33,10 +32,10 @@ export function LeverageYieldPage() {
         ))}
       </div>
       <section className="rounded-lg border bg-card p-5 text-sm text-muted-foreground">
-        <h3 className="font-semibold text-foreground">How it works</h3>
+        <h3 className="font-semibold text-foreground">Built for flexible entry and exit</h3>
         <p className="mt-2">
-          Vaults are leveraged ERC-4626 strategies on Sonic. APR is variable, may become negative, and share value can
-          fall. A withdrawal is the only exit; submitted orders can take time to route and settle.
+          Enter with a supported token on your preferred network, then withdraw your shares to the asset and network you
+          choose. Returns are variable, and leveraged strategies can lose value if market conditions change.
         </p>
       </section>
       {vault && selected && (
