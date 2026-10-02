@@ -1,0 +1,668 @@
+/*
+ * Windows 2000 classic chrome. Colours come from src/brand/theme.css (--win-*, --soda-*); nothing is hardcoded here.
+ * Bevels are the classic two-pixel 3D borders: highlight/light on top-left, dark/shadow on bottom-right.
+ */
+
+.w2k {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--win-text);
+}
+
+/* ---------- Bevels ---------- */
+.bevel-out {
+  background: var(--win-face);
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-light),
+    inset -2px -2px var(--win-shadow),
+    inset 2px 2px var(--win-highlight);
+}
+.bevel-in {
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-light),
+    inset 2px 2px var(--win-dark);
+}
+.bevel-field {
+  background: var(--win-window);
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-face),
+    inset 2px 2px var(--win-dark);
+}
+.bevel-thin-in {
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow);
+}
+.bevel-thin-out {
+  box-shadow:
+    inset -1px -1px var(--win-shadow),
+    inset 1px 1px var(--win-highlight);
+}
+.etched-h {
+  height: 2px;
+  border-top: 1px solid var(--win-shadow);
+  border-bottom: 1px solid var(--win-highlight);
+}
+.etched-v {
+  width: 2px;
+  border-left: 1px solid var(--win-shadow);
+  border-right: 1px solid var(--win-highlight);
+}
+
+/* ---------- Window ---------- */
+.w2k-window {
+  padding: 3px;
+}
+.w2k-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 2px 0 3px;
+  background: linear-gradient(90deg, var(--win-title-a), var(--win-title-b));
+  color: var(--win-select-text);
+  font-weight: 700;
+  user-select: none;
+}
+.w2k-titlebar[data-inactive="true"] {
+  background: linear-gradient(90deg, var(--win-title-inactive-a), var(--win-title-inactive-b));
+  color: var(--win-face);
+}
+.w2k-titlebar-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.w2k-caption-btn {
+  width: 16px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--win-text);
+  padding: 0;
+}
+.w2k-caption-btn:active {
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-dark),
+    inset -2px -2px var(--win-light),
+    inset 2px 2px var(--win-shadow);
+}
+.w2k-caption-btn svg {
+  width: 8px;
+  height: 7px;
+}
+
+.w2k-menubar {
+  display: flex;
+  gap: 0;
+  padding: 1px 0;
+}
+.w2k-menubar > button {
+  padding: 2px 6px;
+}
+.w2k-menubar > button:hover {
+  box-shadow:
+    inset -1px -1px var(--win-shadow),
+    inset 1px 1px var(--win-highlight);
+}
+.w2k-menubar > button[aria-expanded="true"] {
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow);
+}
+
+.w2k-statusbar {
+  display: flex;
+  gap: 2px;
+  padding-top: 2px;
+}
+.w2k-statusbar > * {
+  padding: 2px 4px;
+  min-height: 18px;
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Buttons ---------- */
+.w2k-btn {
+  min-width: 75px;
+  min-height: 23px;
+  padding: 3px 10px;
+  background: var(--win-face);
+  color: var(--win-text);
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-highlight),
+    inset -2px -2px var(--win-shadow),
+    inset 2px 2px var(--win-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.w2k-btn:focus-visible {
+  outline: 1px dotted var(--win-text);
+  outline-offset: -5px;
+}
+.w2k-btn[data-default="true"] {
+  box-shadow:
+    inset 0 0 0 1px var(--win-dark),
+    inset -2px -2px var(--win-dark),
+    inset 2px 2px var(--win-highlight),
+    inset -3px -3px var(--win-shadow),
+    inset 3px 3px var(--win-light);
+}
+.w2k-btn:active:not(:disabled) {
+  box-shadow:
+    inset 0 0 0 1px var(--win-dark),
+    inset 1px 1px var(--win-shadow);
+  padding: 4px 9px 2px 11px;
+}
+.w2k-btn:disabled {
+  color: var(--win-gray-text);
+  text-shadow: 1px 1px var(--win-highlight);
+  cursor: default;
+}
+.w2k-btn:disabled img,
+.w2k-btn:disabled svg {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.w2k-toolbtn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  min-width: 52px;
+}
+.w2k-toolbtn:hover:not(:disabled) {
+  box-shadow:
+    inset -1px -1px var(--win-shadow),
+    inset 1px 1px var(--win-highlight);
+}
+.w2k-toolbtn:active:not(:disabled) {
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow);
+}
+.w2k-toolbtn:disabled {
+  color: var(--win-gray-text);
+  cursor: default;
+}
+
+/* ---------- Fields ---------- */
+.w2k-input {
+  height: 21px;
+  padding: 2px 4px;
+  background: var(--win-window);
+  color: var(--win-text);
+  font: inherit;
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-face),
+    inset 2px 2px var(--win-dark);
+  border: 0;
+  outline: none;
+}
+.w2k-input:disabled {
+  background: var(--win-face);
+  color: var(--win-gray-text);
+}
+.w2k-select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 21px;
+  padding: 2px 22px 2px 4px;
+  font: inherit;
+  color: var(--win-text);
+  border: 0;
+  outline: none;
+  background-color: var(--win-window);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--win-text) 50%),
+    linear-gradient(135deg, var(--win-text) 50%, transparent 50%), linear-gradient(var(--win-face), var(--win-face));
+  background-position:
+    calc(100% - 10px) 9px,
+    calc(100% - 6px) 9px,
+    calc(100% - 2px) 2px;
+  background-size:
+    4px 4px,
+    4px 4px,
+    16px 17px;
+  background-repeat: no-repeat;
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-face),
+    inset 2px 2px var(--win-dark),
+    inset -3px -3px var(--win-dark),
+    inset -18px 0 0 -16px var(--win-highlight);
+}
+.w2k-select:focus-visible,
+.w2k-input:focus-visible {
+  outline: 1px dotted var(--win-text);
+  outline-offset: -4px;
+}
+
+.w2k-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  background: var(--win-window);
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-face),
+    inset 2px 2px var(--win-dark);
+  display: inline-grid;
+  place-content: center;
+}
+.w2k-check:checked::after {
+  content: "";
+  width: 7px;
+  height: 4px;
+  border-left: 2px solid var(--win-text);
+  border-bottom: 2px solid var(--win-text);
+  transform: translateY(-1px) rotate(-45deg);
+}
+.w2k-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--win-window);
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-shadow),
+    inset -2px -2px var(--win-face),
+    inset 2px 2px var(--win-dark);
+  display: inline-grid;
+  place-content: center;
+}
+.w2k-radio:checked::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--win-text);
+}
+
+/* ---------- Group box ---------- */
+.w2k-group {
+  position: relative;
+  border: 1px solid var(--win-shadow);
+  box-shadow:
+    1px 1px 0 var(--win-highlight),
+    inset 1px 1px 0 var(--win-highlight);
+  padding: 12px 8px 8px;
+  margin-top: 7px;
+}
+.w2k-group > legend,
+.w2k-group-label {
+  position: absolute;
+  top: -7px;
+  left: 6px;
+  padding: 0 3px;
+  background: var(--win-face);
+}
+
+/* ---------- Tabs ---------- */
+.w2k-tabs {
+  display: flex;
+  align-items: flex-end;
+  padding-left: 2px;
+  position: relative;
+  z-index: 1;
+}
+.w2k-tab {
+  padding: 3px 8px 2px;
+  margin-right: -1px;
+  background: var(--win-face);
+  box-shadow:
+    inset 1px 1px var(--win-highlight),
+    inset -1px 0 var(--win-dark),
+    inset -2px 0 var(--win-shadow);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.w2k-tab[aria-selected="true"] {
+  padding: 4px 10px 4px;
+  margin: 0 -2px -2px -2px;
+  position: relative;
+  z-index: 2;
+}
+.w2k-tabpanel {
+  padding: 10px;
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-highlight),
+    inset -2px -2px var(--win-shadow);
+}
+
+/* ---------- List view (details) ---------- */
+.w2k-listview {
+  background: var(--win-window);
+  overflow: auto;
+}
+.w2k-listview table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.w2k-listview th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  font-weight: 400;
+  padding: 2px 6px;
+  background: var(--win-face);
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-highlight),
+    inset -2px -2px var(--win-shadow);
+  white-space: nowrap;
+}
+.w2k-listview td {
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+.w2k-listview tbody tr[aria-selected="true"] td {
+  background: var(--win-select);
+  color: var(--win-select-text);
+}
+.w2k-listview tbody tr:focus-visible td {
+  outline: 1px dotted var(--win-text);
+}
+
+/* ---------- Progress bar (blocks) ---------- */
+.w2k-progress {
+  height: 18px;
+  padding: 2px;
+}
+.w2k-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--win-progress) 0 8px, transparent 8px 10px);
+  transition: width 400ms steps(8);
+}
+.w2k-progress-marquee {
+  height: 100%;
+  width: 30%;
+  background: repeating-linear-gradient(90deg, var(--win-progress) 0 8px, transparent 8px 10px);
+  animation: w2k-marquee 1.6s steps(20) infinite;
+}
+@keyframes w2k-marquee {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+/* ---------- Links ---------- */
+.w2k-link {
+  color: var(--win-link);
+  text-decoration: underline;
+}
+.w2k-link:hover {
+  color: var(--destructive);
+}
+
+/* ---------- Tooltip / balloon ---------- */
+.w2k-balloon {
+  background: var(--win-tooltip);
+  border: 1px solid var(--win-text);
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-shadow: 2px 2px 0 var(--win-shadow);
+}
+
+/* ---------- Desktop + taskbar ---------- */
+.w2k-desktop {
+  background: var(--win-desktop);
+  min-height: 100dvh;
+}
+.w2k-taskbar {
+  height: 30px;
+  background: var(--win-face);
+  box-shadow:
+    inset 0 1px var(--win-light),
+    inset 0 2px var(--win-highlight);
+}
+.w2k-taskbtn {
+  height: 22px;
+  min-width: 0;
+  max-width: 160px;
+  flex: 1 1 140px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-align: left;
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-highlight),
+    inset -2px -2px var(--win-shadow),
+    inset 2px 2px var(--win-light);
+}
+.w2k-taskbtn[aria-pressed="true"] {
+  font-weight: 700;
+  background-color: var(--win-highlight);
+  background-image:
+    linear-gradient(45deg, var(--win-face) 25%, transparent 25%, transparent 75%, var(--win-face) 75%),
+    linear-gradient(45deg, var(--win-face) 25%, transparent 25%, transparent 75%, var(--win-face) 75%);
+  background-size: 2px 2px;
+  background-position:
+    0 0,
+    1px 1px;
+  box-shadow:
+    inset -1px -1px var(--win-highlight),
+    inset 1px 1px var(--win-dark),
+    inset -2px -2px var(--win-light),
+    inset 2px 2px var(--win-shadow);
+}
+.w2k-start-menu-banner {
+  background: linear-gradient(0deg, var(--win-title-a), var(--win-title-b));
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.w2k-menu-item:hover,
+.w2k-menu-item:focus-visible {
+  background: var(--win-select);
+  color: var(--win-select-text);
+  outline: none;
+}
+
+.w2k-desktop-icon {
+  width: 76px;
+  color: var(--win-select-text);
+  text-align: center;
+}
+.w2k-desktop-icon span {
+  padding: 0 2px;
+}
+.w2k-desktop-icon:focus-visible span,
+.w2k-desktop-icon:hover span {
+  background: var(--win-select);
+  outline: 1px dotted var(--win-highlight);
+}
+
+/* ---------- Wizard ---------- */
+.w2k-wizard-banner {
+  background: linear-gradient(180deg, var(--win-title-a), var(--win-title-b));
+}
+.w2k-wizard-header {
+  background: var(--win-window);
+  border-bottom: 1px solid var(--win-shadow);
+  box-shadow: 0 1px var(--win-highlight);
+}
+
+/* ---------- Soda bottles ---------- */
+.soda-bubble {
+  fill: var(--soda-bubble);
+  opacity: 0;
+  animation: soda-rise var(--rise, 3s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes soda-rise {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(var(--wobble, 2px), calc(var(--travel, 80px) * -0.5)) scale(1);
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(calc(var(--wobble, 2px) * -1), calc(var(--travel, 80px) * -1)) scale(1.1);
+    opacity: 0;
+  }
+}
+.soda-wave {
+  animation: soda-slosh 3.2s ease-in-out infinite alternate;
+}
+@keyframes soda-slosh {
+  from {
+    transform: translateX(-6px);
+  }
+  to {
+    transform: translateX(6px);
+  }
+}
+.soda-slot[data-selected="true"] .soda-bottle {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+.soda-bottle {
+  transition:
+    transform 160ms ease-out,
+    filter 160ms ease-out;
+}
+.soda-slot:hover .soda-bottle {
+  transform: translateY(-2px);
+}
+
+.lcd {
+  font-family: "Courier New", ui-monospace, monospace;
+  background: var(--win-dark);
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 4px var(--accent);
+}
+.lcd[data-negative="true"] {
+  color: var(--soda-cap);
+  text-shadow: 0 0 4px var(--soda-cap);
+}
+
+.hourglass {
+  animation: hourglass-flip 1.4s steps(2) infinite;
+}
+@keyframes hourglass-flip {
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soda-bubble,
+  .soda-wave,
+  .w2k-progress-marquee,
+  .hourglass {
+    animation: none;
+  }
+  .soda-bubble {
+    opacity: 0.6;
+  }
+}
+
+/* ---------- Authenticity details ---------- */
+.w2k,
+.w2k * {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+}
+.w2k ::selection {
+  background: var(--win-select);
+  color: var(--win-select-text);
+}
+.w2k ::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+.w2k ::-webkit-scrollbar-track {
+  background-color: var(--win-highlight);
+  background-image:
+    linear-gradient(45deg, var(--win-face) 25%, transparent 25%, transparent 75%, var(--win-face) 75%),
+    linear-gradient(45deg, var(--win-face) 25%, transparent 25%, transparent 75%, var(--win-face) 75%);
+  background-size: 2px 2px;
+  background-position:
+    0 0,
+    1px 1px;
+}
+.w2k ::-webkit-scrollbar-thumb {
+  background: var(--win-face);
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-light),
+    inset -2px -2px var(--win-shadow),
+    inset 2px 2px var(--win-highlight);
+}
+.w2k ::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--win-face);
+  box-shadow:
+    inset -1px -1px var(--win-dark),
+    inset 1px 1px var(--win-light),
+    inset -2px -2px var(--win-shadow),
+    inset 2px 2px var(--win-highlight);
+}
+.w2k ::-webkit-scrollbar-corner {
+  background: var(--win-face);
+}
+.w2k-sizegrip {
+  width: 12px;
+  height: 12px;
+  align-self: flex-end;
+  background: linear-gradient(
+    135deg,
+    transparent 0 30%,
+    var(--win-highlight) 30% 37%,
+    var(--win-shadow) 37% 50%,
+    transparent 50% 57%,
+    var(--win-highlight) 57% 64%,
+    var(--win-shadow) 64% 77%,
+    transparent 77% 84%,
+    var(--win-highlight) 84% 91%,
+    var(--win-shadow) 91%
+  );
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
