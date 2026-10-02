@@ -5,52 +5,53 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Smart Vaults — Thaler-inspired brand tokens.
+ * Dark-first: near-black surfaces, electric blue primary, teal accent. Rounded sans, mono for numerals.
+ * Contrast meets WCAG AA (≥4.5:1 for text, ≥3:1 for large text/UI) on its intended surface.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
-  --card: #ffffff;
-  --card-foreground: #483434;
-  --popover: #ffffff;
-  --popover-foreground: #483434;
+  --background: #0a0a0b; /* near-black */
+  --foreground: #fafafa; /* near-white — 18.8:1 on background */
+  --card: #141416;
+  --card-foreground: #fafafa;
+  --popover: #141416;
+  --popover-foreground: #fafafa;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #0066ff; /* electric blue — white text is 4.8:1 */
+  --primary-hover: #0052d6; /* deeper blue for hover; keeps white label AA */
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #1b1b1f; /* subtle elevated surface */
+  --secondary-foreground: #7fb0ff; /* light blue — 7.9:1 on secondary */
+  --accent: #00d9c0; /* teal: accents on primary surfaces only */
+  --accent-foreground: #04231f; /* dark teal — reads on the teal accent */
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #1a1a1e;
+  --muted-foreground: #a1a1a1; /* 7.1:1 on background, 6.4:1 on card */
+  --subtle-foreground: #8c8c90; /* 5.1:1 on background */
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #3387ff; /* bright blue focus ring */
 
   /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
-  --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero: #0066ff;
+  --hero-foreground: #ffffff; /* 4.8:1 on hero */
+  --hero-muted: #d6e4ff; /* light blue for secondary hero text */
+  --hero-accent: #00d9c0;
 
   /* Status */
-  --destructive: #ce4446;
-  --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive: #ff6467; /* light red: 6.8:1 as text on dark, dark label on surface */
+  --destructive-foreground: #0a0a0b;
+  --destructive-muted: #2a1113; /* dark red-tinted callout surface */
+  --success: #10b981; /* 6.3:1 on background */
+  --success-muted: #0e241d; /* dark green-tinted callout surface */
+  --notice: #15151a; /* subtle callout bg with a primary left border */
 
   /* Shape and type */
   --radius: 16px;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --font-sans: ui-rounded, -apple-system, "SF Pro Rounded", "Inter Variable", system-ui, sans-serif;
+  --font-display: ui-rounded, -apple-system, "SF Pro Rounded", "Inter Variable", system-ui, sans-serif;
+  --font-accent: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
 }
