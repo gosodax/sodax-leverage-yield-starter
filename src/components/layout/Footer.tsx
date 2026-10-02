@@ -3,7 +3,7 @@ import { assetUrl, brand } from '@/brand/brand.config';
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t">
+    <footer className="mt-auto border-t-[3px] border-foreground">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-6">
         <span>
           © {new Date().getFullYear()} {brand.appName}. Vault deposits carry smart contract and market risk.
