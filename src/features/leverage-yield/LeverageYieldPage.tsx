@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardTitleBar } from '@/components/ui/card';
 import { NextPrompt } from '@/components/workshop/NextPrompt';
 import { DEFAULT_VAULT_NAME } from '@/config/workshop';
 import { cn } from '@/lib/utils';
@@ -38,7 +38,7 @@ export function LeverageYieldPage() {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         <section className="flex flex-col gap-4">
           <div>
-            <h2 className="font-display text-2xl font-bold">Vaults</h2>
+            <h2 className="font-display text-lg text-primary">Vaults</h2>
             <p className="text-sm text-muted-foreground">
               Pooled ERC-4626 vaults on Sonic that loop a liquid staking token for amplified yield.
             </p>
@@ -60,6 +60,7 @@ export function LeverageYieldPage() {
         {vault && (
           <div ref={panelRef} className="scroll-mt-6 lg:sticky lg:top-6">
             <Card>
+              <CardTitleBar title={`${tab}.exe`} />
               <CardHeader className="pb-4">
                 <CardTitle className="sr-only">{tab === 'deposit' ? 'Deposit' : 'Withdraw'}</CardTitle>
                 <div className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1" role="tablist">
@@ -71,8 +72,10 @@ export function LeverageYieldPage() {
                       aria-selected={tab === t}
                       onClick={() => setTab(t)}
                       className={cn(
-                        'rounded-full py-2 text-sm font-semibold capitalize transition-colors',
-                        tab === t ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
+                        'rounded-full py-2 font-display text-[10px] uppercase transition-colors',
+                        tab === t
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:text-foreground',
                       )}
                     >
                       {t}
