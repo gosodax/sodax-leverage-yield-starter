@@ -24,13 +24,14 @@ export function Window({
   children: ReactNode;
 }) {
   const wm = useWindowManager();
-  const { register } = wm;
+  const { register, unregister } = wm;
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<{ pointerX: number; pointerY: number; x: number; y: number; rect: DOMRect } | null>(null);
   // Animate programmatic moves (see useDodge) but not drags, which must track the pointer exactly.
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => register(id, title), [register, id, title]);
+  useEffect(() => () => unregister(id), [unregister, id]);
 
   const state = wm.windows[id];
   if (!state) return null;

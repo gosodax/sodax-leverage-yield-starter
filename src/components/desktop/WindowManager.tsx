@@ -18,6 +18,8 @@ type WindowManager = {
   order: string[];
   focusedId: string | undefined;
   register: (id: string, title: string) => void;
+  /** Forget a window whose page unmounted, so the taskbar only lists windows that exist. */
+  unregister: (id: string) => void;
   focus: (id: string) => void;
   /** Open (or restore) a window and bring it to the front. */
   open: (id: string) => void;
@@ -56,6 +58,11 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     setOrder(ids => (ids.includes(id) ? ids : [...ids, id]));
   }, []);
 
+  const unregister = useCallback((id: string) => {
+    setWindows(({ [id]: _removed, ...rest }) => rest);
+    setOrder(ids => ids.filter(other => other !== id));
+  }, []);
+
   const value = useMemo<WindowManager>(() => {
     const visible = Object.entries(windows).filter(([, w]) => w.status === 'open');
     const focusedId = visible.sort(([, a], [, b]) => b.z - a.z)[0]?.[0];
@@ -64,6 +71,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       order,
       focusedId,
       register,
+      unregister,
       focus: id => patch(id, (w, topZ) => (w.z === topZ ? {} : { z: topZ + 1 })),
       open: id => patch(id, (_, topZ) => ({ status: 'open', z: topZ + 1 })),
       minimize: id => patch(id, () => ({ status: 'minimized' })),
@@ -73,7 +81,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       resetLayout: () =>
         setWindows(all => Object.fromEntries(Object.entries(all).map(([id, w]) => [id, { ...w, ...NEW_WINDOW }]))),
     };
-  }, [windows, order, register, patch]);
+  }, [windows, order, register, unregister, patch]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

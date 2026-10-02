@@ -28,7 +28,7 @@ export function FlowProgress({
   onReset,
 }: {
   state: FlowState;
-  kind: 'deposit' | 'withdraw';
+  kind: 'deposit' | 'withdraw' | 'swap';
   fillLabel: string;
   skipsRelay: boolean;
   onReset: () => void;
@@ -45,7 +45,7 @@ export function FlowProgress({
   }
   steps.push({
     phase: 'signing',
-    label: kind === 'deposit' ? 'Sign deposit in your wallet' : 'Sign withdrawal in your wallet',
+    label: `Sign ${kind === 'withdraw' ? 'withdrawal' : kind} in your wallet`,
     status: state.phase === 'preparing' ? 'pending' : statusOf('signing', state),
     tx: src && state.srcTxHash ? { chainKey: src, hash: state.srcTxHash } : undefined,
   });
@@ -86,7 +86,11 @@ export function FlowProgress({
       )}
       {state.phase === 'done' && (
         <Callout variant="success">
-          {kind === 'deposit' ? 'Deposit complete. Your shares are in your SODAX hub wallet.' : 'Withdrawal complete.'}
+          {kind === 'deposit'
+            ? 'Deposit complete. Your shares are in your SODAX hub wallet.'
+            : kind === 'swap'
+              ? 'Swap complete.'
+              : 'Withdrawal complete.'}
         </Callout>
       )}
       {state.phase === 'failed' && state.error && <Callout variant="destructive">{state.error}</Callout>}

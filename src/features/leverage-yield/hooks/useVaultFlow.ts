@@ -1,7 +1,9 @@
 import {
+  useDetailedStatus,
   useLeverageYieldDetailedStatus,
   useLeverageYieldVaultSwap,
   useSodaxContext,
+  useSwap,
   useSwapApprove,
 } from '@sodax/dapp-kit';
 import type { LeverageYieldSwapPayload } from '@sodax/sdk';
@@ -37,7 +39,7 @@ export type FlowState = {
 type RunArgs = {
   srcChainKey: SpokeChainKey;
   walletProvider: IEvmWalletProvider;
-  /** Builds the vault-swap payload (deposit or withdraw builder from dapp-kit). */
+  /** Builds the intent payload: a vault deposit / withdraw from dapp-kit's builders, or plain swap params. */
   build: () => Promise<Result<LeverageYieldSwapPayload>>;
   /** Deposits spend a spoke token, so they may need an ERC-20 approval. Withdraws spend hub-wallet shares: never. */
   checkApproval: boolean;
@@ -45,16 +47,20 @@ type RunArgs = {
 
 const IDLE: FlowState = { phase: 'idle' };
 
+/** `vault` routes through `leverageYield.vaultSwap`; `swap` through the generic `swaps.swap`. Same intent lifecycle. */
+export type FlowMode = 'vault' | 'swap';
+
 /**
- * Runs a vault deposit or withdraw end to end: build → approve (if needed) → sign → relay to Sonic → solver fill,
- * tracking each step's tx hash for explorer links. Errors come back as `Result`s and are surfaced as copy, never
- * thrown.
+ * Runs a solver intent end to end (a vault deposit / withdraw, or a plain swap): build → approve (if needed) → sign
+ * → relay to Sonic → solver fill, tracking each step's tx hash for explorer links. Errors come back as `Result`s and
+ * are surfaced as copy, never thrown.
  */
-export function useVaultFlow() {
+export function useVaultFlow(mode: FlowMode = 'vault') {
   const { sodax } = useSodaxContext();
   const queryClient = useQueryClient();
   const { mutateAsyncSafe: approve } = useSwapApprove();
   const { mutateAsyncSafe: vaultSwap } = useLeverageYieldVaultSwap();
+  const { mutateAsyncSafe: swap } = useSwap();
   const [state, setState] = useState<FlowState>(IDLE);
   const runId = useRef(0);
 
@@ -103,7 +109,10 @@ export function useVaultFlow() {
         srcTxHash = hash;
         update(id, { srcTxHash: hash, phase: 'relaying' });
       });
-      const swapped = await vaultSwap({ ...payload, walletProvider: listened });
+      const swapped =
+        mode === 'vault'
+          ? await vaultSwap({ ...payload, walletProvider: listened })
+          : await swap({ params: payload.params, walletProvider: listened });
       if (!swapped.ok) {
         // Before a hash exists the user never signed; after, the intent is on-chain and the relay/notify failed.
         return fail(id, srcTxHash ? 'relaying' : 'signing', swapped.error);
@@ -113,17 +122,26 @@ export function useVaultFlow() {
         srcTxHash: srcTxHash ?? swapped.value.intentDeliveryInfo.srcTxHash,
       });
     },
-    [sodax, approve, vaultSwap, fail, update],
+    [mode, sodax, approve, vaultSwap, swap, fail, update],
   );
 
-  // Once the intent is with the solver, follow it until it fills.
-  const status = useLeverageYieldDetailedStatus({
+  // Once the intent is with the solver, follow it until it fills. Only the hook for this mode is enabled.
+  const filling = state.phase === 'filling';
+  const vaultStatus = useLeverageYieldDetailedStatus({
     params: {
-      srcChainKey: state.phase === 'filling' ? state.srcChainKey : undefined,
-      srcTxHash: state.phase === 'filling' ? state.srcTxHash : undefined,
+      srcChainKey: filling && mode === 'vault' ? state.srcChainKey : undefined,
+      srcTxHash: filling && mode === 'vault' ? state.srcTxHash : undefined,
     },
     queryOptions: { refetchInterval: REFETCH_MS },
   });
+  const swapStatus = useDetailedStatus({
+    params: {
+      srcChainKey: filling && mode === 'swap' ? state.srcChainKey : undefined,
+      srcTxHash: filling && mode === 'swap' ? state.srcTxHash : undefined,
+    },
+    queryOptions: { refetchInterval: REFETCH_MS },
+  });
+  const status = mode === 'vault' ? vaultStatus : swapStatus;
 
   useEffect(() => {
     const result = status.data;
