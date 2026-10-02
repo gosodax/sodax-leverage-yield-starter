@@ -5,52 +5,184 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Current theme: Polish edition. Flag red and white, with a touch of gold (the eagle's crown).
+ * Contrast checked for text on every surface pair below. Buttons are pills.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
+  --background: #ffffff; /* warm white */
+  --foreground: #1c0b0f; /* deep wine */
   --card: #ffffff;
-  --card-foreground: #483434;
+  --card-foreground: #1c0b0f;
   --popover: #ffffff;
-  --popover-foreground: #483434;
+  --popover-foreground: #1c0b0f;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #dc143c; /* flag red */
+  --primary-hover: #b30f30;
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #ffecef; /* blush */
+  --secondary-foreground: #b30f30;
+  --accent: #f7c948; /* crown gold: accents on primary surfaces only */
+  --accent-foreground: #5e0a1a;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #f7f1f2;
+  --muted-foreground: #5f464c;
+  --subtle-foreground: #7d6168;
+  --border: #eccfd4;
+  --input: #e3c0c7;
+  --ring: #ee7088;
 
   /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
+  --hero: #dc143c;
   --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero-muted: #ffe4e9;
+  --hero-accent: #ffd75e;
+  --hero-dark: #1c0b0f; /* hero field behind the waving flag band */
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #8b0f22; /* deep maroon, so errors don't read as the brand red */
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fde3e7;
+  --success: #0b7a3e;
+  --success-muted: #e1f5e9;
+  --notice: #fff0f2; /* callouts with a primary left border */
 
   /* Shape and type */
-  --radius: 16px;
+  --radius: 20px;
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inria Serif", ui-serif, Georgia, serif;
   --font-accent: "Shrikhand", cursive;
+}
+
+/* Flag stripe: white over red, pinned to the very top of the page. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 6px;
+  z-index: 60;
+  background: linear-gradient(to bottom, var(--card) 50%, var(--primary) 50%);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+/* Folk-paper dots on the page background. */
+body {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--primary) 9%, transparent) 1.2px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+/* Hero and banner: flag red with soft glows and a slow drift (the rest of the motion is in HeroBackdrop). */
+.bg-hero {
+  background-color: var(--hero);
+  background-image:
+    radial-gradient(ellipse at 15% 0%, color-mix(in srgb, white 22%, transparent), transparent 55%),
+    radial-gradient(ellipse at 90% 100%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 50%),
+    linear-gradient(135deg, var(--hero), color-mix(in srgb, var(--hero) 78%, black));
+  background-size:
+    140% 140%,
+    140% 140%,
+    auto,
+    auto;
+}
+
+/* Dark hero: deep wine with a red glow, under the white-over-red waves. */
+.bg-hero-dark {
+  background-color: var(--hero-dark);
+  background-image:
+    radial-gradient(ellipse at 85% 10%, color-mix(in srgb, var(--primary) 35%, transparent), transparent 55%),
+    radial-gradient(ellipse at 10% 100%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 50%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bg-hero {
+    animation: hero-drift 14s ease-in-out infinite alternate;
+  }
+  @keyframes hero-drift {
+    from {
+      background-position:
+        0% 0%,
+        100% 100%,
+        0 0,
+        0 0;
+    }
+    to {
+      background-position:
+        100% 30%,
+        0% 70%,
+        0 0,
+        0 0;
+    }
+  }
+}
+
+/* Header: a soft claret-to-cream wash that drifts slowly, with a thin gold line that sweeps across the bottom. */
+header.sticky {
+  position: sticky;
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--primary) 9%, var(--background)),
+    var(--background) 35%,
+    color-mix(in srgb, var(--primary) 5%, var(--background)) 70%,
+    color-mix(in srgb, var(--primary) 10%, var(--background))
+  );
+  background-size: 250% 100%;
+}
+header.sticky::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  background-position: -40% 0;
+}
+
+/* Entrance: vault cards rise in one after another. */
+.animate-rise-in {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  header.sticky {
+    animation: header-drift 18s ease-in-out infinite alternate;
+  }
+  header.sticky::after {
+    animation: header-sweep 6s ease-in-out infinite;
+  }
+  .animate-rise-in {
+    animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes header-drift {
+    from {
+      background-position: 0% 0;
+    }
+    to {
+      background-position: 100% 0;
+    }
+  }
+  @keyframes header-sweep {
+    from {
+      background-position: -40% 0;
+    }
+    to {
+      background-position: 140% 0;
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

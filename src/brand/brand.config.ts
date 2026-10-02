@@ -3,17 +3,17 @@
  * Paths are relative to the site root and resolved against Vite's base URL.
  */
 export const brand = {
-  appName: 'Leverage Yield',
+  appName: 'Leverage Yield PL',
   tagline:
     'Deposit from the network you already use. Solvers route it into a pooled vault that earns leveraged staking yield.',
   /** Shown next to the logo in the header. Set to '' to hide. */
-  productLabel: 'Vaults',
+  productLabel: 'Vaults · PL',
   logo: {
     /** Logo for light surfaces (header). */
-    onLight: 'brand/logo-on-light.svg',
+    onLight: 'brand/wordmark-on-light.svg',
     /** Logo for dark / primary surfaces (hero, footer). */
-    onDark: 'brand/logo-on-dark.svg',
-    alt: 'SODAX',
+    onDark: 'brand/wordmark-on-dark.svg',
+    alt: 'Leverage Yield',
   },
   /** Small "Powered by SODAX" credit in the footer. Partners may keep or remove it. */
   poweredBySodax: true,
