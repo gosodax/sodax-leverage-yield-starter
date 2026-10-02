@@ -1,18 +1,57 @@
-import { NextPrompt } from '@/components/workshop/NextPrompt';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { DEFAULT_SOURCE_CHAIN, DEFAULT_VAULT_NAME, type SourceChainKey } from '@/config/workshop';
+import { useEvmWallet } from '@/wallet';
+import { DepositPanel } from './DepositPanel';
+import { useVaults } from './hooks';
+import { VaultCard } from './VaultCard';
+import { WithdrawDialog } from './WithdrawDialog';
 
-/**
- * Mount point for the Leverage Yield feature. Replace the rest of this page with the vault UI.
- *
- * Start here: docs/WORKSHOP.md.
- */
 export function LeverageYieldPage() {
+  const vaults = useVaults();
+  const { address } = useEvmWallet();
+  const [vaultName, setVaultName] = useState(DEFAULT_VAULT_NAME);
+  const [srcChain, setSrcChain] = useState<SourceChainKey>(DEFAULT_SOURCE_CHAIN);
+  const [withdrawName, setWithdrawName] = useState<string | undefined>();
+  const vault = vaults.find(v => v.name === vaultName) ?? vaults[0];
+  const withdrawVault = vaults.find(v => v.name === withdrawName);
+
+  const ordered = useMemo(() => (vault ? [vault, ...vaults.filter(v => v !== vault)] : vaults), [vault, vaults]);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (vaultName) sliderRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
+  }, [vaultName]);
+
+  if (!vault) return null;
+
   return (
-    <div className="flex flex-col gap-4">
-      <NextPrompt next={1} />
-      <p className="text-center text-sm text-muted-foreground">
-        Wallet connection, the SODAX SDK and the theme are already wired. You build the vault UI in{' '}
-        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">src/features/leverage-yield/</code>.
-      </p>
+    <div className="flex flex-col gap-6">
+      <section aria-label="Vaults" className="flex flex-col gap-3">
+        <div
+          ref={sliderRef}
+          className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pt-2 pb-3 sm:-mx-6 sm:px-6"
+        >
+          {ordered.map(v => (
+            <VaultCard
+              key={v.name}
+              vault={v}
+              address={address}
+              selected={v.name === vault.name}
+              onSelect={() => setVaultName(v.name)}
+              onDeposit={() => {
+                setVaultName(v.name);
+                document.getElementById('deposit')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              onWithdraw={() => setWithdrawName(v.name)}
+            />
+          ))}
+        </div>
+      </section>
+      <div className="w-full">
+        <DepositPanel vault={vault} srcChain={srcChain} onSrcChainChange={setSrcChain} />
+      </div>
+      {withdrawVault && (
+        <WithdrawDialog vault={withdrawVault} open onOpenChange={open => !open && setWithdrawName(undefined)} />
+      )}
     </div>
   );
 }
