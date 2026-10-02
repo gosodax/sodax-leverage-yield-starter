@@ -64,26 +64,24 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
   }, [finish]);
 
   // Boot starts on its own. Browsers only allow sound after a user gesture, so the soundscape starts right away
-  // where autoplay is allowed, and otherwise on the first click or key press during the boot.
+  // where autoplay is allowed, and otherwise from the first click or key press (with a hint until then).
+  const [needsGesture, setNeedsGesture] = useState(false);
+  const [muted] = useMuted();
   useEffect(() => {
     let started = false;
-    const start = () => {
+    const start = async () => {
       if (started || doneRef.current) return;
-      unlockAudio();
-      const sound = playBootSequence();
+      if (!(await unlockAudio()) || started || doneRef.current) return;
       started = true;
-      soundRef.current = sound;
+      setNeedsGesture(false);
+      soundRef.current = playBootSequence();
     };
-    start();
-    const onGesture = () => {
-      if (started) {
-        unlockAudio();
-        return;
-      }
-      start();
-    };
-    window.addEventListener('pointerdown', onGesture, { once: true });
-    window.addEventListener('keydown', onGesture, { once: true });
+    void start().then(() => {
+      if (!started) setNeedsGesture(true);
+    });
+    const onGesture = () => void start();
+    window.addEventListener('pointerdown', onGesture);
+    window.addEventListener('keydown', onGesture);
     return () => {
       window.removeEventListener('pointerdown', onGesture);
       window.removeEventListener('keydown', onGesture);
@@ -97,6 +95,11 @@ export function BootSequence({ onDone }: { onDone: () => void }) {
       aria-modal="true"
       aria-label="HazyVault2000 start-up"
     >
+      {needsGesture && !muted && (
+        <p className="fixed top-3 left-1/2 z-[101] -translate-x-1/2 animate-pulse bg-[var(--win-tooltip)] px-3 py-1 text-[12px] text-[var(--win-text)] w2k">
+          🔊 Click anywhere for the boot sounds
+        </p>
+      )}
       {phase === 'post' && <PostScreen onDone={() => setPhase('splash')} />}
       {phase === 'splash' && <Splash onDone={() => finish(true)} />}
       {

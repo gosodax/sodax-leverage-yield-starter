@@ -6,7 +6,7 @@ import { DEFAULT_VAULT_NAME } from '@/config/workshop';
 import { cn } from '@/lib/utils';
 import { useEvmWallet } from '@/wallet';
 import { BootSequence } from './boot/BootSequence';
-import { playDing, playError, useMuted } from './boot/sounds';
+import { playDing, playError, unlockAudio, useMuted } from './boot/sounds';
 import { DepositWizard, type FlowNotice } from './components/DepositWizard';
 import { AboutBox, GettingStarted, RecycleBin } from './components/Dialogs';
 import { MyShares, type ShareRowKey, type ShareSummary } from './components/MyShares';
@@ -110,6 +110,17 @@ export function LeverageYieldPage() {
   const [depositNotice, setDepositNotice] = useState<FlowNotice>();
   const [withdrawNotice, setWithdrawNotice] = useState<FlowNotice>();
   const [balloon, setBalloon] = useState<{ title: string; text: string; failed: boolean } | null>(null);
+
+  // Sounds (balloon ding, error) need the audio context unlocked by a gesture, even when the boot was skipped.
+  useEffect(() => {
+    const unlock = () => void unlockAudio();
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, []);
 
   const finishBoot = useCallback(() => {
     writeFlag('session', 'hazyvault.booted', true);

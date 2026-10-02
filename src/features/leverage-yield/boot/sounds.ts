@@ -64,26 +64,35 @@ function hasGesture(): boolean {
   return activation ? activation.hasBeenActive : true;
 }
 
-/** Create / resume the AudioContext. Call from a user gesture. */
-export function unlockAudio(): void {
+/**
+ * Create / resume the AudioContext. Resolves true once audio is actually running (call it from a user gesture for
+ * that to work in browsers with an autoplay policy).
+ */
+export async function unlockAudio(): Promise<boolean> {
   try {
     const C = audioCtor();
-    if (!C) return;
+    if (!C) return false;
     if (!ctx) {
       ctx = new C();
       master = ctx.createGain();
       master.gain.value = 0.25;
       master.connect(ctx.destination);
     }
-    if (ctx.state === 'suspended' && hasGesture()) void ctx.resume().catch(() => {});
+    if (ctx.state === 'suspended' && hasGesture()) await ctx.resume().catch(() => {});
+    return ctx.state === 'running';
   } catch {
     ctx = undefined;
+    return false;
   }
 }
 
+/** True when sound can play right now (context running, not muted). */
+export function audioRunning(): boolean {
+  return !muted && !!ctx && ctx.state === 'running';
+}
+
 function ready(): { ac: AudioContext; out: GainNode } | undefined {
-  if (muted || !ctx || !master) return undefined;
-  if (ctx.state === 'suspended' && hasGesture()) void ctx.resume().catch(() => {});
+  if (muted || !ctx || !master || ctx.state !== 'running') return undefined;
   return { ac: ctx, out: master };
 }
 
