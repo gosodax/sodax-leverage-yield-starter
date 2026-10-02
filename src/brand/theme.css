@@ -5,51 +5,51 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Sugarloop: a pink dessert palette. Strawberry frosting for actions, strawberry-milk surfaces, dark cocoa
+ * text, vanilla-cream accents, pistachio for success. Text colours keep >= 4.5:1 on their surfaces.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
+  --background: #fff6f9; /* strawberry milk */
+  --foreground: #47202f; /* dark cocoa */
   --card: #ffffff;
-  --card-foreground: #483434;
+  --card-foreground: #47202f;
   --popover: #ffffff;
-  --popover-foreground: #483434;
+  --popover-foreground: #47202f;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #c8326c; /* strawberry frosting (5.1:1 on white) */
+  --primary-hover: #a8255a; /* raspberry */
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #fdebf2; /* pink icing */
+  --secondary-foreground: #a8255a;
+  --accent: #ffe08a; /* vanilla custard: accents on pink surfaces only */
+  --accent-foreground: #7a3b10; /* caramel */
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #fae4ed; /* marshmallow */
+  --muted-foreground: #7a4a5d; /* mauve cocoa */
+  --subtle-foreground: #a07686;
+  --border: #f4cfde; /* sugar glaze */
+  --input: #efc2d4;
+  --ring: #f08bb4; /* bubblegum */
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
+  /* Hero band (frosting surface with light text) */
+  --hero: #d23a75;
   --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  --hero-muted: #ffd2e3;
+  --hero-accent: #ffe08a;
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #c62f3b; /* cherry */
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fde8ea;
+  --success: #2a7d4f; /* pistachio */
+  --success-muted: #e3f5e9;
+  --notice: #fdeef4;
 
   /* Shape and type */
-  --radius: 16px;
+  --radius: 20px;
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inria Serif", ui-serif, Georgia, serif;
   --font-accent: "Shrikhand", cursive;

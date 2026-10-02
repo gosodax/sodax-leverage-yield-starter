@@ -3,17 +3,17 @@
  * Paths are relative to the site root and resolved against Vite's base URL.
  */
 export const brand = {
-  appName: 'Leverage Yield',
+  appName: 'Sugarloop',
   tagline:
-    'Deposit from the network you already use. Solvers route it into a pooled vault that earns leveraged staking yield.',
+    'One deposit from the network you already use. Solvers bake it into a pooled vault that loops your staking yield for an extra layer of sweetness.',
   /** Shown next to the logo in the header. Set to '' to hide. */
-  productLabel: 'Vaults',
+  productLabel: 'Yield Bakery',
   logo: {
     /** Logo for light surfaces (header). */
-    onLight: 'brand/logo-on-light.svg',
+    onLight: 'brand/sugarloop-on-light.svg',
     /** Logo for dark / primary surfaces (hero, footer). */
-    onDark: 'brand/logo-on-dark.svg',
-    alt: 'SODAX',
+    onDark: 'brand/sugarloop-on-dark.svg',
+    alt: 'Sugarloop',
   },
   /** Small "Powered by SODAX" credit in the footer. Partners may keep or remove it. */
   poweredBySodax: true,
