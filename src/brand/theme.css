@@ -1,56 +1,119 @@
 /*
  * Brand theme: the ONLY place brand colours, fonts and radii live.
  *
- * Components use semantic Tailwind classes (bg-primary, text-muted-foreground, rounded-lg, font-display…)
- * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
- * public/brand/*). Nothing else needs to change.
- *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * HazyVault2000: Windows 2000 "classic" chrome (silver 3D bevels, navy gradient title bars, teal desktop) with
+ * soda-flavoured vaults. Components use the semantic Tailwind classes and the --win-* / --soda-* variables below.
  */
 :root {
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
-  --card: #ffffff;
-  --card-foreground: #483434;
-  --popover: #ffffff;
-  --popover-foreground: #483434;
+  --background: #3a6ea5; /* Win2k desktop */
+  --foreground: #000000;
+  --card: #d4d0c8; /* 3D face */
+  --card-foreground: #000000;
+  --popover: #d4d0c8;
+  --popover-foreground: #000000;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
+  --primary: #0a246a; /* selection navy */
+  --primary-hover: #08184a;
   --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --secondary: #d4d0c8;
+  --secondary-foreground: #000000;
+  --accent: #ffd92f; /* soda yellow */
+  --accent-foreground: #000000;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #e4e1dc;
+  --muted-foreground: #404040;
+  --subtle-foreground: #808080;
+  --border: #808080;
+  --input: #808080;
+  --ring: #000000;
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
+  /* Hero band */
+  --hero: #0a246a;
   --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
+  --hero-muted: #a6caf0;
   --hero-accent: #ffd92f;
 
   /* Status */
-  --destructive: #ce4446;
+  --destructive: #c00000;
   --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive-muted: #fbe3e3;
+  --success: #007a00;
+  --success-muted: #e3f5e3;
+  --notice: #ffffe1; /* tooltip / balloon yellow */
+
+  /* Win2k system colours */
+  --win-face: #d4d0c8;
+  --win-highlight: #ffffff;
+  --win-light: #e4e1dc;
+  --win-shadow: #808080;
+  --win-dark: #404040;
+  --win-text: #000000;
+  --win-gray-text: #808080;
+  --win-window: #ffffff;
+  --win-select: #0a246a;
+  --win-select-text: #ffffff;
+  --win-title-a: #0a246a;
+  --win-title-b: #a6caf0;
+  --win-title-inactive-a: #808080;
+  --win-title-inactive-b: #c0c0c0;
+  --win-desktop: #3a6ea5;
+  --win-tooltip: #ffffe1;
+  --win-link: #0000ee;
+  --win-progress: #0a246a;
+
+  /* Soda flavours (one per vault) */
+  --soda-orange: #f28c1c; /* sUSDS: Sky orange */
+  --soda-orange-dark: #b85c00;
+  --soda-grape: #7b4bd6; /* weETH: EtherFi grape */
+  --soda-grape-dark: #4b2596;
+  --soda-blue: #3fa6e6; /* wstETH: blue raspberry */
+  --soda-blue-dark: #1d6aa6;
+  --soda-lime: #4ccf5a; /* JitoSOL: lime */
+  --soda-lime-dark: #23862e;
+  --soda-cola: #8a4b2a; /* fallback */
+  --soda-cola-dark: #4f2510;
+  --soda-glass: #e8f4f8;
+  --soda-glass-edge: #9ab8c4;
+  --soda-cap: #c8102e;
+  --soda-cap-dark: #7d0a1c;
+  --soda-bubble: #ffffff;
+
+  /* Wallpaper */
+  --sky-top: #0f4fa8;
+  --sky-mid: #2e74c9;
+  --sky-bottom: #5f9de0;
+  --cloud: #ffffff;
+  --cloud-shade: #c9d6e6;
+  --tile-orange: #f2491c;
+  --tile-orange-light: #ff8a5c;
+  --tile-cream: #f4e3a6;
+  --tile-navy: #0b2fa8;
+  --tile-blue: #3c79d6;
+  --tile-sky: #a9d4f5;
+  --tile-shadow: rgb(0 0 0 / 0.3);
+
+  /* Soda can */
+  --can-red: #d0121b;
+  --can-red-dark: #7e0a10;
+  --can-red-light: #ff5a4f;
+  --can-logo: #ff8a1f; /* orange logo */
+  --can-logo-dark: #c45200;
+  --can-silver: #e9ecef;
+  --can-silver-mid: #b7bec6;
+  --can-silver-dark: #6f7780;
+
+  /* Logo flag panes */
+  --flag-red: #e8452c;
+  --flag-green: #46a83f;
+  --flag-blue: #2b6fd6;
+  --flag-yellow: #f7c51e;
 
   /* Shape and type */
-  --radius: 16px;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
+  --radius: 0px;
+  --font-sans: Tahoma, "Segoe UI", Verdana, "MS Sans Serif", Geneva, sans-serif;
+  --font-display: "Franklin Gothic Medium", "Franklin Gothic", "Arial Narrow", Arial, sans-serif;
   --font-accent: "Shrikhand", cursive;
 }

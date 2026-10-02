@@ -3,11 +3,11 @@
  * Paths are relative to the site root and resolved against Vite's base URL.
  */
 export const brand = {
-  appName: 'Leverage Yield',
+  appName: 'HazyVault2000',
   tagline:
-    'Deposit from the network you already use. Solvers route it into a pooled vault that earns leveraged staking yield.',
+    'Leveraged staking yield vaults, served like soda. Deposit from the network you already use; solvers fill it into a pooled vault.',
   /** Shown next to the logo in the header. Set to '' to hide. */
-  productLabel: 'Vaults',
+  productLabel: '2000 Professional',
   logo: {
     /** Logo for light surfaces (header). */
     onLight: 'brand/logo-on-light.svg',
