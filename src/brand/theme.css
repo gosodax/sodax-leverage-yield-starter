@@ -95,6 +95,14 @@
   --tile-sky: #a9d4f5;
   --tile-shadow: rgb(0 0 0 / 0.3);
 
+  /* Power-on screen (beige PC case) */
+  --pc-beige: #e6dfcc;
+  --pc-beige-light: #f6f1e3;
+  --pc-beige-dark: #b3a88d;
+  --pc-beige-shadow: #7d735c;
+  --led-green: #3dff6e;
+  --led-amber: #ffb02e;
+
   /* Soda can */
   --can-red: #d0121b;
   --can-red-dark: #7e0a10;
