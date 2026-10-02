@@ -19,7 +19,7 @@ export function Footer() {
               className="flex items-center gap-2 hover:text-foreground"
             >
               Powered by
-              <img src={assetUrl('brand/logo-on-light.svg')} alt="SODAX" className="h-4 w-auto" />
+              <img src={assetUrl('brand/powered-by-sodax.svg')} alt="SODAX" className="h-4 w-auto" />
             </a>
           )}
         </div>

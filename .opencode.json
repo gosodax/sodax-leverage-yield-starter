@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "uvx",
+      "args": ["code-review-graph", "serve"],
+      "cwd": "/Users/patel/work/PRODUCTS/SODAX/sodax-leverage-yield-starter",
+      "type": "stdio",
+      "env": []
+    }
+  }
+}

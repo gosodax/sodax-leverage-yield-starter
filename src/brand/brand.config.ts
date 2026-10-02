@@ -3,17 +3,17 @@
  * Paths are relative to the site root and resolved against Vite's base URL.
  */
 export const brand = {
-  appName: 'Leverage Yield',
+  appName: 'Smart Vaults',
   tagline:
     'Deposit from the network you already use. Solvers route it into a pooled vault that earns leveraged staking yield.',
   /** Shown next to the logo in the header. Set to '' to hide. */
-  productLabel: 'Vaults',
+  productLabel: 'Finance',
   logo: {
     /** Logo for light surfaces (header). */
     onLight: 'brand/logo-on-light.svg',
     /** Logo for dark / primary surfaces (hero, footer). */
     onDark: 'brand/logo-on-dark.svg',
-    alt: 'SODAX',
+    alt: 'Smart Vaults',
   },
   /** Small "Powered by SODAX" credit in the footer. Partners may keep or remove it. */
   poweredBySodax: true,
