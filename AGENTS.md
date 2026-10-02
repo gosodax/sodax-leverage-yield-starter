@@ -63,7 +63,5 @@ pnpm preflight   # read-only health check of the SODAX API and RPCs
 The workshop is described in `docs/WORKSHOP.md`. Reference builds live on branches `checkpoint/m1` …
 `checkpoint/m4` and `solution`.
 
-On `main` and the checkpoints, `LeverageYieldPage.tsx` shows `<NextPrompt next={N} />` (from
-`@/components/workshop/NextPrompt`): the prompt the participant pastes next, read from `docs/WORKSHOP.md`. Keep it
-at the top of the page. When you finish milestone N, set `next={N + 1}`, or `next="done"` after Milestone 4 (or
-after building the whole feature in one go).
+The `main` branch and the checkpoints show a `<NextPrompt />` card at the top of the page with the next workshop
+prompt. This build has removed it (and `src/components/workshop/`) for production.

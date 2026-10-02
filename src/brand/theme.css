@@ -5,52 +5,57 @@
  * that read these variables. To whitelabel, change the values below (and src/brand/brand.config.ts,
  * public/brand/*). Nothing else needs to change.
  *
- * Defaults: SODAX brand tokens.
- * Warm cherry + cream palette. Yellow is an accent only, never a surface. Buttons are pills.
+ * Longside, arcade edition: a night-sky arcade cabinet. Gold is the coin you press to play (primary actions),
+ * green is XP gained, red is a lost life. Chunky radii, a bubbly display face for headlines, and a monospace
+ * scoreboard for every number. All text pairs meet WCAG AA (4.5:1) on their surfaces.
  */
 :root {
+  color-scheme: dark;
+
   /* Surfaces */
-  --background: #f9f7f5; /* vibrant-white */
-  --foreground: #483434; /* espresso */
-  --card: #ffffff;
-  --card-foreground: #483434;
-  --popover: #ffffff;
-  --popover-foreground: #483434;
+  --background: #140f2e; /* night sky */
+  --foreground: #f4f1ff; /* starlight */
+  --card: #1e1745; /* cabinet */
+  --card-foreground: #f4f1ff;
+  --popover: #251c55;
+  --popover-foreground: #f4f1ff;
 
   /* Brand */
-  --primary: #a55c55; /* cherry-soda */
-  --primary-hover: #964d48; /* cherry-dark */
-  --primary-foreground: #ffffff;
-  --secondary: #f8f3f3; /* almost-white */
-  --secondary-foreground: #a55c55;
-  --accent: #ffd92f; /* yellow-soda: accents on primary surfaces only */
-  --accent-foreground: #964d48;
+  --primary: #ffc93c; /* gold coin */
+  --primary-hover: #ffd866;
+  --primary-foreground: #2a1a00;
+  --secondary: #2c2363;
+  --secondary-foreground: #ffd866;
+  --accent: #7cf5ff; /* power-up cyan: accents on primary surfaces only */
+  --accent-foreground: #0b1a3a;
 
   /* Neutrals */
-  --muted: #f0eaeb; /* light-cream */
-  --muted-foreground: #6b5c5b; /* clay-dark */
-  --subtle-foreground: #8e7e7d; /* clay */
-  --border: #e5d5d4; /* cream-cherry */
-  --input: #e5d5d4;
-  --ring: #cc9e9a; /* cherry-bright */
+  --muted: #241c4f;
+  --muted-foreground: #b3a9e0;
+  --subtle-foreground: #9a90cc;
+  --border: #352b73;
+  --input: #463a94;
+  --ring: #7cf5ff;
 
-  /* Hero band (primary surface with light text) */
-  --hero: #a55c55;
-  --hero-foreground: #ffffff;
-  --hero-muted: #e3bebb; /* cherry-brighter */
-  --hero-accent: #ffd92f;
+  /* Hero band */
+  --hero: #1b1342;
+  --hero-foreground: #f4f1ff;
+  --hero-muted: #b3a9e0;
+  --hero-accent: #ffc93c;
 
   /* Status */
-  --destructive: #ce4446;
-  --destructive-foreground: #ffffff;
-  --destructive-muted: #faecec;
-  --success: #089541;
-  --success-muted: #e6f8ec;
-  --notice: #ede6e6; /* cream-white: callouts with a primary left border */
+  --destructive: #ff5c7a; /* lost life */
+  --destructive-foreground: #2b0710;
+  --destructive-muted: #3a1430;
+  --success: #3ddc84; /* XP green */
+  --success-muted: #123a2e;
+  --notice: #241c4f;
 
   /* Shape and type */
-  --radius: 16px;
+  --radius: 18px;
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inria Serif", ui-serif, Georgia, serif;
-  --font-accent: "Shrikhand", cursive;
+  --font-display: "Shrikhand", ui-rounded, "Arial Rounded MT Bold", sans-serif;
+  --font-accent: "Shrikhand", ui-rounded, "Arial Rounded MT Bold", sans-serif;
+  /* Overrides Tailwind's default `font-mono`: the scoreboard face for prices, amounts and rates. */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }

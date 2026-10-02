@@ -1,0 +1,147 @@
+/* Motion for the vault feature. Colours come from the theme tokens; everything stops under reduced motion. */
+
+/* A value that just changed flashes like a price tick: green when it went up, red when it went down. */
+@keyframes ls-flash-up {
+  from {
+    background-color: color-mix(in srgb, var(--success) 30%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+@keyframes ls-flash-down {
+  from {
+    background-color: color-mix(in srgb, var(--destructive) 30%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+.ls-flash-up,
+.ls-flash-down {
+  border-radius: 4px;
+  animation: ls-flash-up 900ms ease-out;
+}
+.ls-flash-down {
+  animation-name: ls-flash-down;
+}
+
+/* Cards and panels arriving. */
+@keyframes ls-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ls-rise {
+  animation: ls-rise 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--ls-delay, 0ms);
+}
+
+/* A completed step's check. */
+@keyframes ls-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ls-pop {
+  animation: ls-pop 380ms cubic-bezier(0.2, 0.8, 0.2, 1.2) both;
+}
+
+/* Success: the check draws itself, a ring pulses out, and green candles rise behind it. */
+@keyframes ls-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ls-check-ring {
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: ls-draw 600ms ease-out forwards;
+}
+.ls-check-tick {
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  animation: ls-draw 350ms 450ms ease-out forwards;
+}
+@keyframes ls-pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+.ls-pulse {
+  animation: ls-pulse 1100ms ease-out 2 both;
+}
+@keyframes ls-candle {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scaleY(0.2);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-110px) scaleY(1);
+  }
+}
+.ls-candle {
+  transform-origin: bottom;
+  animation: ls-candle var(--ls-duration, 1500ms) var(--ls-delay, 0ms) cubic-bezier(0.15, 0.7, 0.3, 1) both;
+}
+
+/* Ticker tape: two copies of the row scroll by half their width, so the loop has no seam. */
+@keyframes ls-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ls-marquee {
+  animation: ls-marquee 45s linear infinite;
+}
+.ls-marquee:hover {
+  animation-play-state: paused;
+}
+.ls-tape-mask {
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-flash-up,
+  .ls-flash-down,
+  .ls-rise,
+  .ls-pop,
+  .ls-pulse,
+  .ls-marquee {
+    animation: none;
+  }
+  .ls-check-ring,
+  .ls-check-tick {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+  .ls-candle {
+    display: none;
+  }
+  /* The tape stands still, so let people scroll it instead. */
+  .ls-tape-mask {
+    overflow-x: auto;
+  }
+}
